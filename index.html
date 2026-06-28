@@ -3,480 +3,716 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Vault — Custom Component Edition</title>
-
-<script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video.js"></script>
-
+<title>Studio Vault — Dynamic Cloud Stream</title>
 <style>
-/* --- Design Token Engine --- */
-:root {
-    --liquid-bg: rgba(255, 255, 255, 0.015);
-    --liquid-surface: rgba(255, 255, 255, 0.04);
-    --liquid-border: rgba(255, 255, 255, 0.07);
-    --liquid-border-hover: rgba(255, 255, 255, 0.22);
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-main: radial-gradient(circle at 50% -20%, #15172c 0%, #05060a 100%);
+    --surface-glass: rgba(255, 255, 255, 0.02);
+    --surface-solid: #0f1115;
+    --surface-card: rgba(22, 24, 28, 0.6);
+    --surface-element: rgba(255, 255, 255, 0.05);
+    --border-light: rgba(255, 255, 255, 0.06);
+    --border-hover: rgba(255, 255, 255, 0.18);
+    --text-pure: #f8fafc;
+    --text-muted: #94a3b8;
+    --text-dark: #475569;
+    --accent: #5865F2;
+    --accent-glow: rgba(88, 101, 242, 0.25);
     --ios-radius: 16px;
-    --ios-radius-lg: 24px;
-    --fluid-bezier: cubic-bezier(0.16, 1, 0.3, 1);
-}
+    --ios-radius-sm: 8px;
+    --fluid-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-}
-
-body {
-    background: radial-gradient(circle at 50% -20%, #14172e 0%, #040508 100%);
-    color: var(--text-primary);
+  body {
+    background: #05060a;
+    background-image: var(--bg-main);
+    color: var(--text-pure);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-}
+  }
 
-/* --- Navigation --- */
-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    padding: 16px 32px;
-    background: rgba(4, 5, 8, 0.45);
-    backdrop-filter: blur(30px) saturate(160%);
-    -webkit-backdrop-filter: blur(30px) saturate(160%);
-    border-bottom: 1px solid var(--liquid-border);
+  /* --- Navigation App Bar --- */
+  .app-frame { max-width: 1440px; margin: 0 auto; padding: 0 32px 80px; }
+  
+  .navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
-}
+    padding: 32px 0 24px;
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 32px;
+  }
+  .branding { display: flex; align-items: center; gap: 14px; }
+  .brand-logo {
+    width: 40px; height: 40px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .brand-logo svg { width: 22px; height: 22px; fill: #fff; }
+  .brand-title { font-size: 20px; font-weight: 700; letter-spacing: -0.4px; }
+  .brand-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-.search-wrapper {
-    flex: 1;
-    max-width: 320px;
-}
-
-.search-wrapper input {
-    width: 100%;
-    padding: 10px 20px;
-    background: var(--liquid-bg);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--liquid-border);
-    border-radius: var(--ios-radius-lg);
-    color: #fff;
-    font-size: 14px;
-}
-
-.pill-badge {
-    font-size: 12px;
-    font-weight: 500;
-    background: var(--liquid-surface);
-    backdrop-filter: blur(12px);
-    padding: 8px 18px;
-    border-radius: var(--ios-radius-lg);
-    border: 1px solid var(--liquid-border);
-    color: var(--text-secondary);
-}
-
-@media (max-width: 600px) {
-    .pill-badge { display: none !important; }
-}
-
-/* --- Thumbnail Deck Canvas --- */
-.grid-canvas {
-    max-width: 1600px;
-    margin: auto;
-    padding: 32px;
-    display: grid;
-    gap: 24px;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-}
-
-.glass-deck-card {
-    background: var(--liquid-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--liquid-border);
-    border-radius: var(--ios-radius-lg);
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.4s var(--fluid-bezier);
-}
-
-.glass-deck-card:hover {
-    transform: scale(1.03) translateY(-2px);
-    border-color: var(--liquid-border-hover);
-}
-
-.media-window {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: #010102;
-    overflow: hidden;
-}
-
-.media-window video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    pointer-events: none; 
-}
-
-.card-description-block {
-    padding: 14px 18px 16px 18px;
-}
-
-.asset-title {
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 8px;
-}
-
-.metadata-flex-row {
+  /* --- Quick Action Control Strip --- */
+  .action-strip {
     display: flex;
-    gap: 6px;
-}
+    align-items: center;
+    gap: 12px;
+    background: var(--surface-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-light);
+    padding: 12px 20px;
+    border-radius: var(--ios-radius);
+    margin-bottom: 32px;
+  }
+  
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--ios-radius-sm);
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none;
+    transition: all 0.2s var(--fluid-ease);
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #4752c4; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-secondary { background: var(--surface-element); color: var(--text-pure); border: 1px solid var(--border-light); }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: var(--border-hover); }
 
-.ios-tag {
-    font-size: 10px;
-    background: rgba(255, 255, 255, 0.04);
-    padding: 3px 8px;
-    border-radius: 6px;
-    color: var(--text-secondary);
-}
+  .engine-status { font-size: 13px; color: var(--text-muted); margin-left: auto; font-weight: 500; }
+  .engine-status.error { color: #f87171; }
 
-/* --- Cinema View Layout Wrapper --- */
-.cinema-canvas {
-    display: none;
-    width: 100%;
-    max-width: 680px; 
-    margin: 0 auto;
-    padding: 20px 16px;
-    flex-direction: column;
-    gap: 14px;
-    animation: stageIn 0.4s var(--fluid-bezier);
-}
+  /* --- Interactive Filter Bar --- */
+  .toolbar-wrapper {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-pill {
+    padding: 6px 14px; border-radius: 30px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--border-light); background: transparent;
+    color: var(--text-muted); transition: all 0.15s var(--fluid-ease);
+  }
+  .filter-pill:hover { border-color: var(--border-hover); color: var(--text-pure); }
+  .filter-pill.active { background: rgba(88, 101, 242, 0.15); border-color: var(--accent); color: #8b9cff; }
 
-.liquid-action-btn {
-    align-self: flex-start;
-    background: var(--liquid-surface);
-    backdrop-filter: blur(16px);
-    border: 1px solid var(--liquid-border);
-    color: var(--text-primary);
-    padding: 8px 18px;
-    border-radius: var(--ios-radius-lg);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
+  .search-container { position: relative; }
+  .search-container svg {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; stroke: var(--text-dark); fill: none; stroke-width: 2.5;
+  }
+  .search-field {
+    background: var(--surface-solid); border: 1px solid var(--border-light);
+    border-radius: 30px; padding: 8px 16px 8px 38px;
+    font-size: 13px; color: var(--text-pure); outline: none;
+    width: 220px; transition: all 0.3s var(--fluid-ease);
+  }
+  .search-field:focus { border-color: var(--accent); width: 280px; box-shadow: 0 0 15px rgba(88,101,242,0.1); }
 
-/* --- Master Theater Enclosure Container --- */
-.theater-enclosure {
+  .sorting-dropdown {
+    background: var(--surface-solid); border: 1px solid var(--border-light);
+    border-radius: var(--ios-radius-sm); padding: 8px 12px;
+    font-size: 13px; color: var(--text-muted); outline: none; cursor: pointer;
+  }
+
+  /* --- Core Deck Grid Canvas --- */
+  .deck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  /* --- Media Showcase Cards --- */
+  .media-card {
+    background: var(--surface-card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-light);
+    border-radius: var(--ios-radius);
+    overflow: hidden; cursor: pointer;
+    transition: all 0.4s var(--fluid-ease);
+    position: relative;
+  }
+  .media-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  }
+
+  .preview-wrapper {
+    position: relative; width: 100%; padding-top: 56.25%;
+    background: #090a0f; overflow: hidden;
+  }
+  .preview-wrapper video {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  
+  .card-fallback {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px; color: var(--text-dark);
+  }
+  .card-fallback svg { width: 36px; height: 36px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+  .hover-action-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.4);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.25s var(--fluid-ease);
+  }
+  .media-card:hover .hover-action-overlay { opacity: 1; }
+  .action-ring {
+    width: 48px; height: 48px; background: #fff; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transform: scale(0.8); transition: transform 0.25s var(--fluid-ease);
+  }
+  .media-card:hover .action-ring { transform: scale(1); }
+  .action-ring svg { width: 16px; height: 16px; fill: #05060a; margin-left: 2px; }
+
+  .badge-duration {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(5, 6, 10, 0.75); color: #fff;
+    font-size: 11px; font-weight: 700; padding: 3px 8px;
+    border-radius: 6px; backdrop-filter: blur(4px);
+    font-family: monospace;
+  }
+
+  .card-details { padding: 16px; }
+  .card-title {
+    font-size: 14px; font-weight: 600; color: var(--text-pure);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px;
+  }
+  .card-row-meta { display: flex; align-items: center; gap: 8px; }
+  .tag-extension {
+    background: rgba(255,255,255,0.06); color: var(--text-muted);
+    font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;
+  }
+  .meta-caption { font-size: 12px; color: var(--text-muted); }
+  .meta-divider { color: var(--text-dark); font-size: 12px; }
+
+  .author-profile {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light);
+  }
+  .author-avatar {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; color: #fff;
+  }
+  .author-handle { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* --- Theater Screening Modal System --- */
+  .theater-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(3, 4, 6, 0.9); align-items: center; justify-content: center;
+    padding: 24px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  .theater-overlay.active { display: flex; }
+  
+  .theater-shell {
+    background: var(--surface-solid);
+    border: 1px solid var(--border-light);
+    border-radius: var(--ios-radius);
+    width: 100%; max-width: 960px;
+    overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,0.8);
+    animation: viewportStageIn 0.4s var(--fluid-ease);
+  }
+  @keyframes viewportStageIn {
+    from { transform: scale(0.96) translateY(10px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .theater-topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; border-bottom: 1px solid var(--border-light);
+  }
+  .theater-heading { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .theater-dismiss {
+    background: var(--surface-element); border: none; border-radius: 8px;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-muted); transition: all 0.2s;
+  }
+  .theater-dismiss:hover { background: rgba(255,255,255,0.1); color: var(--text-pure); }
+  .theater-dismiss svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+
+  /* --- Advanced Dual-Track Cinema Frame --- */
+  .cinema-viewport-container {
+    position: relative;
     width: 100%;
     aspect-ratio: 16/9;
     background: #000;
-    border-radius: var(--ios-radius) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
-    position: relative;
-    
-    /* Strict global masking to guarantee matching rounded corners on all children */
     overflow: hidden !important;
-    clip-path: inset(0 round var(--ios-radius)) !important;
-    -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
-}
+    clip-path: inset(0 round 0px); /* Base constraint */
+  }
 
-/* --- Isolated Background Blur Layer --- */
-.backdrop-blur-canvas {
+  /* Decoupled Background Blur Mechanism */
+  .cinema-bg-blur {
     position: absolute !important;
-    top: -10% !important;
-    left: -10% !important;
-    width: 120% !important;
-    height: 120% !important;
+    top: -12% !important; left: -12% !important;
+    width: 124% !important; height: 124% !important;
     object-fit: cover !important;
-    filter: blur(28px) brightness(0.5) saturate(130%) !important;
+    filter: blur(32px) brightness(0.45) saturate(140%) !important;
     z-index: 1 !important;
     pointer-events: none !important;
-}
+    transform: translateZ(0);
+  }
 
-/* --- Isolated Foreground Component Layer --- */
-video-player {
+  /* Sharpened Foreground Content Canvas with Unified Edge Mask Feathering */
+  .cinema-fg-player {
     position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    display: block !important;
+    top: 0 !important; left: 0;
+    width: 100% !important; height: 100% !important;
+    object-fit: contain !important;
     z-index: 2 !important;
     background: transparent !important;
-}
-
-video-skin {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    position: relative !important;
-    background: transparent !important;
-}
-
-/* Sharp Content Track with Dynamic Gradient Feathering Edges */
-video-player video.fg-canvas-track {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-    position: relative !important;
-    background: transparent !important;
-    pointer-events: auto !important;
+    display: block;
     
-    /* Dynamically blends video letterbox boundaries into the blur layer smoothly */
-    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%),
-                linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+    mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
+                linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%) !important;
     mask-composite: intersect !important;
-    -webkit-mask-image: -webkit-linear-gradient(left, transparent 0%, black 8%, black 92%, transparent 100%),
-                        -webkit-linear-gradient(top, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+    -webkit-mask-image: -webkit-linear-gradient(left, transparent 0%, black 6%, black 94%, transparent 100%),
+                        -webkit-linear-gradient(top, transparent 0%, black 6%, black 94%, transparent 100%) !important;
     -webkit-mask-composite: source-in !important;
-}
+  }
 
-video-player video::-webkit-media-controls {
-    display: none !important;
-}
+  .theater-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; border-top: 1px solid var(--border-light); gap: 16px;
+  }
+  .theater-metadata-labels { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+  .theater-metadata-labels strong { color: var(--text-pure); font-weight: 500; }
 
-.cinema-header-title {
-    font-size: 15px;
-    font-weight: 700;
-}
+  .empty-canvas-state {
+    grid-column: 1 / -1; text-align: center; padding: 96px 24px; color: var(--text-dark);
+  }
+  .empty-canvas-state svg { width: 48px; height: 48px; stroke: var(--text-dark); fill: none; margin-bottom: 16px; }
 
-@keyframes stageIn {
-    from { transform: scale(0.99) translateY(8px); opacity: 0; }
-    to { transform: scale(1) translateY(0); opacity: 1; }
-}
-
-.empty-state-notice {
-    text-align: center;
-    padding: 80px 0;
-    color: var(--text-secondary);
-    grid-column: 1/-1;
-}
+  @media (max-width: 768px) {
+    .toolbar-wrapper { flex-direction: column; align-items: stretch; }
+    .search-container { width: 100%; }
+    .search-field { width: 100%; }
+    .search-field:focus { width: 100%; }
+  }
 </style>
 </head>
 <body>
 
-<header id="global-navbar">
-    <div class="search-wrapper">
-        <input type="text" id="directory-search" placeholder="Search parameters...">
+<div class="app-frame">
+  <header class="navbar">
+    <div class="branding">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.001.022.012.04.028.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">Studio Vault</h1>
+        <p class="brand-subtitle">Automated Discord Media Cloud Pipeline</p>
+      </div>
     </div>
-    <div class="pill-badge" id="runtime-asset-counter">0 modules mounted</div>
-</header>
+  </header>
 
-<div id="deck-wrapper-view">
-    <div id="live-grid-container" class="grid-canvas"></div>
+  <div class="action-strip">
+    <button class="btn btn-primary" id="fetchTrigger" onclick="initializeCloudSync()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      Synchronize Engine
+    </button>
+    <button class="btn btn-secondary" onclick="purgeLibraryContainer()">Reset View</button>
+    <span class="engine-status" id="statusOutput">Awaiting synchronization sequence initialization...</span>
+  </div>
+
+  <div class="toolbar-wrapper" id="controlToolbar" style="display:none">
+    <div class="pill-group" id="pillContainer">
+      <button class="filter-pill active" onclick="updateActiveExtensionFilter(this,'all')">All Material</button>
+    </div>
+    
+    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+      <select class="sorting-dropdown" id="sortDropdown" onchange="renderDisplayGrid()">
+        <option value="newest">Newest Arrived</option>
+        <option value="oldest">Oldest Records</option>
+        <option value="largest">Payload Volumetric</option>
+        <option value="name">Alphanumeric Label</option>
+      </select>
+
+      <div class="search-container">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-field" id="searchFilterBox" placeholder="Filter parameters..." oninput="renderDisplayGrid()">
+      </div>
+    </div>
+  </div>
+
+  <main class="deck-grid" id="mainCardGrid">
+    <div class="empty-canvas-state">
+      <svg viewBox="0 0 24 24" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      <h3>Zero Tracks Cached</h3>
+      <p>Initialize synchronization sequence to populate your asset grid.</p>
+    </div>
+  </main>
 </div>
 
-<div id="cinema-wrapper-view" class="cinema-canvas">
-    <button class="liquid-action-btn" onclick="executeBackNavigation()">← View Deck Collection</button>
-    <div class="theater-enclosure" id="video-injection-nexus"></div>
-    <div class="cinema-header-title" id="cinema-display-title"></div>
-    <div class="metadata-flex-row" id="cinema-display-metadata"></div>
+<div class="theater-overlay" id="cinemaTheaterModal" onclick="processOutsideOverlayClick(event)">
+  <div class="theater-shell">
+    <div class="theater-topbar">
+      <span class="theater-heading" id="theaterVideoTitle">Asset Viewport</span>
+      <button class="theater-dismiss" onclick="deactivateCinemaTheater()" aria-label="Dismiss Viewport">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    
+    <div class="cinema-viewport-container" id="cinemaPlayerSandbox"></div>
+    
+    <div class="theater-footer">
+      <div class="theater-metadata-labels" id="theaterMetadataBlock"></div>
+      <a class="btn btn-primary" id="theaterDownloadBtn" href="#" target="_blank">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download File
+      </a>
+    </div>
+  </div>
 </div>
 
 <script>
-const registry = [
-    { "name": "ssstwitter.com_1776071102679.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "size": "4.0 MB", "resolution": "480×480" }, 
-    { "name": "ssstwitter.com_1776060852922_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "size": "4.5 MB", "resolution": "480×786" }, 
-    { "name": "ssstwitter.com_1776062055583.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140176409591879/ssstwitter.com_1776062055583.mov?ex=6a416be7&is=6a401a67&hm=c4b599ac9ee3d68c695aba9fe6c7e67395e1e653e77eeea6794354319d27d616&", "size": "5.1 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_1776061492997.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177114366072/ssstwitter.com_1776061492997.mov?ex=6a416be7&is=6a401a67&hm=25c33b57695c1f56626be0c6fca3425fbaee084b3bb21fe7912a87d799704465&", "size": "2.9 MB", "resolution": "360×640" }, 
-    { "name": "copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177990713464/copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov?ex=6a416be7&is=6a401a67&hm=433c4fbcd39fbdd9cdef083f3263d055cee9bcfa4db325df9b1db666d91fb061&", "size": "7.1 MB", "resolution": "886×410" }, 
-    { "name": "ssstwitter.com_1776052898083_copy_copy_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116349944303688/ssstwitter.com_1776052898083_copy_copy_copy.mov?ex=6a4155b6&is=6a400436&hm=4a844934748609f34de3d78ba5328a332264c0df15a3c3e1e325bee45c09e491&", "size": "9.2 MB", "resolution": "854×480" }, 
-    { "name": "ssstwitter.com_1776055786699_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116310450864190/ssstwitter.com_1776055786699_copy.mov?ex=6a4155ad&is=6a40042d&hm=49af48762fc435f33ed82ecaaf0b5ce7c1ab2dda28b880cf77ba78d4c8d74565&", "size": "4.4 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_1776055360513_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311012643017/ssstwitter.com_1776055360513_copy.mov?ex=6a4155ad&is=6a40042d&hm=5963602123fe7e18c137f76468d6b327d4e2dba7fd6e8c82d86ba7dbbef56f0f&", "size": "1.6 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_1776056128981_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311423680594/ssstwitter.com_1776056128981_copy.mov?ex=6a4155ad&is=6a40042d&hm=f38825980f913bdb5c13648e04bcb7aa6d2579c3bb6d5bb112d55c66106ba0e2&", "size": "5.4 MB", "resolution": "480×480" }, 
-    { "name": "ssstwitter.com_1776055571926_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116312225059007/ssstwitter.com_1776055571926_copy.mov?ex=6a4155ad&is=6a40042d&hm=9a86fa0f47ca28132aaad76ad0e127ddf905ceea2f44dd9064f902a229245188&", "size": "9.5 MB", "resolution": "480×800" }, 
-    { "name": "ssstwitter.com_1776054786398_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116313692930119/ssstwitter.com_1776054786398_copy.mov?ex=6a4155ad&is=6a40042d&hm=199272078564337012f24e7a307d1e45bf37d25d000ffcc406c544b2c07cb2d0&", "size": "8.1 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_1776054502053_copy_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116314582126682/ssstwitter.com_1776054502053_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=5b8c5d6005f189097179c94f8409188a88968f081f0313743cd5148754fc8606&", "size": "6.1 MB", "resolution": "406×720" }, 
-    { "name": "ssstwitter.com_1776054931006_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116315286638724/ssstwitter.com_1776054931006_copy.mov?ex=6a4155ae&is=6a40042e&hm=ef0efbc012b3928fb846ac851e1530b844d6fc7ec4649e83610b37a2f517682e&", "size": "6.3 MB", "resolution": "480×828" }, 
-    { "name": "ssstwitter.com_1776054471537_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316142276688/ssstwitter.com_1776054471537_copy.mov?ex=6a4155ae&is=6a40042e&hm=a4d88695a68cc4667ee60ca55992c2db6bc4a69edad2b7b575439aa1dc1da525&", "size": "2.3 MB", "resolution": "480×802" }, 
-    { "name": "ssstwitter.com_1776056043316_copy_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316918485203/ssstwitter.com_1776056043316_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=1139d60c189f0343a36ab6f0afd12e05f105c5bcbded3bae5ee9cc5c6d3d0094&", "size": "7.2 MB", "resolution": "480×770" }, 
-    { "name": "ssstwitter.com_1776055838120_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116317748953218/ssstwitter.com_1776055838120_copy.mov?ex=6a4155ae&is=6a40042e&hm=82081f3c59a1e6797fc1a1551e331a9878154c658735e078548d3fd8fe9f264c&", "size": "790.7 KB", "resolution": "480×480" }, 
-    { "name": "ssstwitter.com_1776052489565_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116054606446693/ssstwitter.com_1776052489565_copy.mov?ex=6a415570&is=6a4003f0&hm=30882df7a529ba2a93d980d864e8b3512af1509429dfda9975a1cccf6304dd9e&", "size": "5.2 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_1776055891755.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055231529002/ssstwitter.com_1776055891755.mov?ex=6a415570&is=6a4003f0&hm=168c4a4408b96eedb5be4868b1118af4319396b64de3928ba2c0bb89b65cb708&", "size": "2.1 MB", "resolution": "480×864" }, 
-    { "name": "ssstwitter.com_1776056157496.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "size": "8.5 MB", "resolution": "404×670" }, 
-    { "name": "ssstwitter.com_1776055808208.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "size": "3.1 MB", "resolution": "480×850" }, 
-    { "name": "ssstwitter.com_1776052339188.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "size": "5.2 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_177605514465.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_177605514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa7e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "size": "4.8 MB", "resolution": "406×722" }, 
-    { "name": "ssstwitter.com_1776052176689.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "size": "5.6 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_1776052221000.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "size": "1.9 MB", "resolution": "480×480" }, 
-    { "name": "ssstwitter.com_1776052088374.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "size": "1.4 MB", "resolution": "480×852" }
-];
+  // ==========================================
+  // PIPELINE CONFIGURATION PARAMETERS
+  // ==========================================
+  const DISCORD_USER_TOKEN  = "YOUR_DISCORD_TOKEN_HERE"; 
+  const DISCORD_CHANNEL_ID  = "YOUR_CHANNEL_ID_HERE";
+  const SCAN_DEPTH_LIMIT    = 250; 
+  
+  const VALID_VIDEO_FORMATS = ['mp4','mov','webm','mkv','avi','m4v','wmv','flv','ogg','ts'];
+  let libraryDatabase       = [];
+  let currentSelectionExt   = 'all';
 
-const mainGrid = document.getElementById("live-grid-container");
-const searchEngineInput = document.getElementById("directory-search");
-const layoutAssetCounter = document.getElementById("runtime-asset-counter");
+  function extractFileExtension(filename) { 
+    return (filename.split('.').pop() || '').toLowerCase(); 
+  }
 
-function mountGrid(items) {
-    mainGrid.innerHTML = "";
-    layoutAssetCounter.textContent = `${items.length} files synchronized`;
+  function computeReadableSize(bytes) {
+    if (!bytes) return 'Stream Link';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  }
 
-    if (items.length === 0) {
-        mainGrid.innerHTML = `<div class="empty-state-notice">Zero matching assets.</div>`;
-        return;
+  function parseFormattedTimestamp(isoString) {
+    return new Date(isoString).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function parseTimeDuration(totalSeconds) {
+    if (!totalSeconds) return null;
+    const minutes = Math.floor(totalSeconds / 60);
+    const remainingSeconds = Math.floor(totalSeconds % 60);
+    return `${minutes}:${String(remainingSeconds).padStart(2,'0')}`;
+  }
+
+  function generateUserInitial(username) {
+    return (username || '?').slice(0,1).toUpperCase();
+  }
+
+  function updateStatusIndicator(msg, typeClass) {
+    const box = document.getElementById('statusOutput');
+    box.textContent = msg;
+    box.className = 'engine-status' + (typeClass ? ' ' + typeClass : '');
+  }
+
+  // ==========================================
+  // DYNAMIC REMOTE MEDIA DISCORD EXTRACTION PIPELINE
+  // ==========================================
+  async function initializeCloudSync() {
+    if (!DISCORD_USER_TOKEN || DISCORD_USER_TOKEN.includes("YOUR_DISCORD_TOKEN") || !DISCORD_CHANNEL_ID) {
+      updateStatusIndicator('Authentication pipeline fault: Configure user credentials directly inside scripts.', 'error');
+      return;
     }
 
-    items.forEach(item => {
-        const structuralCard = document.createElement("div");
-        structuralCard.className = "glass-deck-card";
-        const virtualSlug = encodeURIComponent(item.name.replace(/\.[^/.]+$/, ""));
-        structuralCard.onclick = () => routeToCinemaView(virtualSlug, item.name);
+    const actionTrigger = document.getElementById('fetchTrigger');
+    actionTrigger.disabled = true;
+    libraryDatabase = [];
+    updateStatusIndicator('Establishing upstream pipeline handshakes...');
 
-        structuralCard.innerHTML = `
-            <div class="media-window">
-                <video muted loop preload="metadata" src="${item.video}"></video>
-            </div>
-            <div class="card-description-block">
-                <div class="asset-title">${item.name}</div>
-                <div class="metadata-flex-row">
-                    <span class="ios-tag">${item.size}</span>
-                    <span class="ios-tag">${item.resolution}</span>
-                </div>
-            </div>
-        `;
-        mainGrid.appendChild(structuralCard);
-    });
+    try {
+      let contextPointerMessageId = null;
+      let totalMessagesProcessed = 0;
 
-    initPrecisionHoverEngine();
-}
+      while (totalMessagesProcessed < SCAN_DEPTH_LIMIT) {
+        const structuralBatchAllocation = Math.min(100, SCAN_DEPTH_LIMIT - totalMessagesProcessed);
+        let endpointUrl = `https://discord.com/api/v10/channels/${DISCORD_CHANNEL_ID}/messages?limit=${structuralBatchAllocation}`;
+        if (contextPointerMessageId) endpointUrl += `&before=${contextPointerMessageId}`;
 
-function initPrecisionHoverEngine() {
-    document.querySelectorAll('.media-window').forEach(windowNode => {
-        const innerVideo = windowNode.querySelector('video');
-        let executionTimer;
-
-        windowNode.onmouseenter = () => {
-            if (innerVideo.duration) { processMidpointPlayback(innerVideo); } 
-            else { innerVideo.addEventListener('loadedmetadata', () => processMidpointPlayback(innerVideo), { once: true }); }
-        };
-
-        windowNode.onmouseleave = () => {
-            clearTimeout(executionTimer);
-            innerVideo.pause();
-            innerVideo.currentTime = 0;
-        };
-
-        function processMidpointPlayback(v) {
-            v.currentTime = v.duration / 2;
-            v.play().then(() => {
-                executionTimer = setTimeout(() => { v.pause(); v.currentTime = 0; }, 3000);
-            }).catch(() => {});
-        }
-    });
-}
-
-function routeToCinemaView(slug, fullAssetIdentifier) {
-    const assetInstance = registry.find(a => a.name === fullAssetIdentifier);
-    if (!assetInstance) return;
-
-    history.pushState({ layer: 'cinema', name: fullAssetIdentifier }, "", `./${slug}/`);
-    renderCinemaViewport(assetInstance);
-}
-
-function executeBackNavigation() {
-    const safeHomeSegment = window.location.pathname.replace(/\/[^\/]*\/?$/, '');
-    history.pushState({ layer: 'deck' }, "", safeHomeSegment || '/');
-    renderSystemDeck();
-}
-
-function renderSystemDeck() {
-    document.getElementById("cinema-wrapper-view").style.display = "none";
-    document.getElementById("global-navbar").style.display = "flex";
-    document.getElementById("deck-wrapper-view").style.display = "block";
-    document.getElementById("video-injection-nexus").innerHTML = ""; 
-}
-
-function renderCinemaViewport(targetAsset) {
-    document.getElementById("deck-wrapper-view").style.display = "none";
-    document.getElementById("global-navbar").style.display = "none";
-    
-    const viewportNode = document.getElementById("cinema-wrapper-view");
-    viewportNode.style.display = "flex";
-
-    document.getElementById("cinema-display-title").textContent = targetAsset.name;
-    document.getElementById("cinema-display-metadata").innerHTML = `
-        <span class="ios-tag">Weight: ${targetAsset.size}</span>
-        <span class="ios-tag">Resolution: ${targetAsset.resolution}</span>
-    `;
-
-    const injectionPoint = document.getElementById("video-injection-nexus");
-    
-    // Decoupled Dom Layer Architecture: Blur is moved completely outside the custom web component layer
-    injectionPoint.innerHTML = `
-        <video class="backdrop-blur-canvas" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
-        <video-player controls autoplay>
-            <video-skin>
-                <video class="fg-canvas-track" id="main-fg-track" src="${targetAsset.video}" playsinline></video>
-            </video-skin>
-        </video-player>
-    `;
-
-    function applyShadowGroundedFixes() {
-        const targetVideo = injectionPoint.querySelector('#main-fg-track');
-        const backgroundBlurTrack = injectionPoint.querySelector('#bg-blur-track');
-        if (!targetVideo || !backgroundBlurTrack) return;
-
-        // Force explicit layout rules down the component stack override
-        targetVideo.style.setProperty('object-fit', 'contain', 'important');
-        targetVideo.style.setProperty('width', '100%', 'important');
-        targetVideo.style.setProperty('height', '100%', 'important');
-        targetVideo.style.setProperty('background', 'transparent', 'important');
-
-        // Master playback synchronization engine
-        targetVideo.addEventListener('play', () => backgroundBlurTrack.play());
-        targetVideo.addEventListener('pause', () => backgroundBlurTrack.pause());
-        targetVideo.addEventListener('seeking', () => backgroundBlurTrack.currentTime = targetVideo.currentTime);
-        targetVideo.addEventListener('timeupdate', () => {
-            if (Math.abs(backgroundBlurTrack.currentTime - targetVideo.currentTime) > 0.15) {
-                backgroundBlurTrack.currentTime = targetVideo.currentTime;
-            }
+        const dynamicResponse = await fetch(endpointUrl, {
+          headers: { 'Authorization': DISCORD_USER_TOKEN, 'Content-Type': 'application/json' }
         });
+
+        if (!dynamicResponse.ok) {
+          const faultPayload = await dynamicResponse.json().catch(() => ({}));
+          throw new Error(faultPayload.message || `API Response Status: ${dynamicResponse.status}`);
+        }
+
+        const messagesBatch = await dynamicResponse.json();
+        if (!messagesBatch.length) break;
+
+        for (const msgInstance of messagesBatch) {
+          for (const item of (msgInstance.attachments || [])) {
+            const formatExtension = extractFileExtension(item.filename);
+            if (VALID_VIDEO_FORMATS.includes(formatExtension)) {
+              libraryDatabase.push({
+                url: item.url,
+                proxy: item.proxy_url,
+                name: item.filename,
+                size: item.size,
+                ext: formatExtension,
+                date: msgInstance.timestamp,
+                author: msgInstance.author?.username || 'System Node',
+                width: item.width,
+                height: item.height,
+                duration: item.duration_secs || null,
+              });
+            }
+          }
+          for (const embedItem of (msgInstance.embeds || [])) {
+            if (embedItem.video?.url) {
+              libraryDatabase.push({
+                url: embedItem.video.url,
+                proxy: embedItem.video.proxy_url || embedItem.video.url,
+                name: embedItem.title || 'Injected Web Embedded Stream',
+                size: null,
+                ext: 'mp4',
+                date: msgInstance.timestamp,
+                author: msgInstance.author?.username || 'External Domain',
+                duration: null,
+              });
+            }
+          }
+        }
+
+        totalMessagesProcessed += messagesBatch.length;
+        updateStatusIndicator(`Parsing matrix structure: ${totalMessagesProcessed} vectors analyzed — ${libraryDatabase.length} media tracks cached...`);
+        contextPointerMessageId = messagesBatch[messagesBatch.length - 1].id;
         
-        if (!targetVideo.paused) { backgroundBlurTrack.play().catch(() => {}); }
+        if (messagesBatch.length < structuralBatchAllocation) break;
+        await new Promise(resolveInstance => setTimeout(resolveInstance, 200));
+      }
+
+      compileDynamicInterfaceFilters();
+      renderDisplayGrid();
+      updateStatusIndicator(`Pipeline operational. Cache verified: ${libraryDatabase.length} tracks across ${totalMessagesProcessed} server records.`);
+
+    } catch (faultException) {
+      updateStatusIndicator('Pipeline connection failure: ' + faultException.message, 'error');
+    }
+    actionTrigger.disabled = false;
+  }
+
+  function compileDynamicInterfaceFilters() {
+    const distinctFormats = [...new Set(libraryDatabase.map(v => v.ext))].sort();
+    const storageStrip = document.getElementById('pillContainer');
+    storageStrip.innerHTML = '<button class="filter-pill active" onclick="updateActiveExtensionFilter(this,\'all\')">All Material</button>';
+    
+    distinctFormats.forEach(fileExtensionString => {
+      const pillNode = document.createElement('button');
+      pillNode.className = 'filter-pill';
+      pillNode.textContent = fileExtensionString.toUpperCase();
+      pillNode.onclick = () => updateActiveExtensionFilter(pillNode, fileExtensionString);
+      storageStrip.appendChild(pillNode);
+    });
+    
+    document.getElementById('controlToolbar').style.display = libraryDatabase.length ? 'flex' : 'none';
+  }
+
+  function updateActiveExtensionFilter(elementNode, selectionValue) {
+    currentSelectionExt = selectionValue;
+    document.querySelectorAll('.filter-pill').forEach(pill => pill.classList.remove('active'));
+    elementNode.classList.add('active');
+    renderDisplayGrid();
+  }
+
+  function getProcessedContentCollection() {
+    const rawSearchQuery = (document.getElementById('searchFilterBox').value || '').toLowerCase().trim();
+    const structuralSortMode = document.getElementById('sortDropdown').value;
+    
+    let operatingList = libraryDatabase.filter(item =>
+      (currentSelectionExt === 'all' || item.ext === currentSelectionExt) &&
+      (!rawSearchQuery || item.name.toLowerCase().includes(rawSearchQuery))
+    );
+
+    if (structuralSortMode === 'newest') operatingList.sort((alpha, beta) => new Date(beta.date) - new Date(alpha.date));
+    else if (structuralSortMode === 'oldest') operatingList.sort((alpha, beta) => new Date(alpha.date) - new Date(beta.date));
+    else if (structuralSortMode === 'largest') operatingList.sort((alpha, beta) => (beta.size || 0) - (alpha.size || 0));
+    else if (structuralSortMode === 'name') operatingList.sort((alpha, beta) => alpha.name.localeCompare(beta.name));
+    
+    return operatingList;
+  }
+
+  // ==========================================
+  // RENDER INTERFACE GRID CANVAS
+  // ==========================================
+  function renderDisplayGrid() {
+    const activeAssets = getProcessedContentCollection();
+    const stagingAreaGrid = document.getElementById('mainCardGrid');
+    
+    if (!activeAssets.length) {
+      stagingAreaGrid.innerHTML = `
+        <div class="empty-canvas-state">
+          <svg viewBox="0 0 24 24" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <h3>Zero Sorting Context Matches</h3>
+          <p>No tracks match the current parameters. Adjust searching terms or target filters.</p>
+        </div>`;
+      return;
     }
 
-    // Run synchronization routine checks
-    applyShadowGroundedFixes();
-    const foregroundVideo = injectionPoint.querySelector('#main-fg-track');
-    if (foregroundVideo) {
-        foregroundVideo.addEventListener('loadedmetadata', applyShadowGroundedFixes);
-        foregroundVideo.addEventListener('play', applyShadowGroundedFixes);
+    stagingAreaGrid.innerHTML = activeAssets.map((asset) => {
+      const relationalRegistryIndex = libraryDatabase.indexOf(asset);
+      const computedDurationStamp = asset.duration ? parseTimeDuration(asset.duration) : '';
+      return `
+      <div class="media-card" onclick="activateCinemaTheater(${relationalRegistryIndex})" silverware-index="${relationalRegistryIndex}">
+        <div class="preview-wrapper">
+          <video src="${asset.proxy || asset.url}#t=0.5" preload="metadata" muted 
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          </video>
+          <div class="card-fallback" style="display:none">
+            <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            <span>.${asset.ext}</span>
+          </div>
+          <div class="hover-action-overlay">
+            <div class="action-ring">
+              <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
+          </div>
+          ${computedDurationStamp ? `<div class="badge-duration">${computedDurationStamp}</div>` : ''}
+        </div>
+        <div class="card-details">
+          <div class="card-title" title="${asset.name}">${asset.name}</div>
+          <div class="card-row-meta">
+            <span class="tag-extension">${asset.ext}</span>
+            ${asset.size ? `<span class="meta-caption">${computeReadableSize(asset.size)}</span>` : ''}
+            <span class="meta-divider">·</span>
+            <span class="meta-caption">${parseFormattedTimestamp(asset.date)}</span>
+          </div>
+          <div class="author-profile">
+            <div class="author-avatar">${generateUserInitial(asset.author)}</div>
+            <span class="author-handle">@${asset.author}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    initializePrecisionHoverPlayback();
+  }
+
+  // Seamless mid-point card background preview mechanics
+  function initializePrecisionHoverPlayback() {
+    document.querySelectorAll('.preview-wrapper').forEach(cardBox => {
+      const interactiveVideo = cardBox.querySelector('video');
+      let terminationTimer;
+      if (!interactiveVideo) return;
+
+      cardBox.onmouseenter = () => {
+        if (interactiveVideo.duration) { executePlaybackSequence(); } 
+        else { interactiveVideo.addEventListener('loadedmetadata', executePlaybackSequence, { once: true }); }
+      };
+
+      cardBox.onmouseleave = () => {
+        clearTimeout(terminationTimer);
+        interactiveVideo.pause();
+        interactiveVideo.currentTime = 0;
+      };
+
+      function executePlaybackSequence() {
+        interactiveVideo.currentTime = interactiveVideo.duration / 3;
+        interactiveVideo.play().then(() => {
+          terminationTimer = setTimeout(() => { interactiveVideo.pause(); interactiveVideo.currentTime = 0; }, 3500);
+        }).catch(() => {});
+      }
+    });
+  }
+
+  // ==========================================
+  // IMMERSIVE SEAMLESS CINEMA CORE ARCHITECTURE
+  // ==========================================
+  function activateCinemaTheater(targetRecordIndex) {
+    const objectRecord = libraryDatabase[targetRecordIndex];
+    if (!objectRecord) return;
+
+    document.getElementById('theaterVideoTitle').textContent = objectRecord.name;
+    const mediaSandboxContainer = document.getElementById('cinemaPlayerSandbox');
+    
+    // Completely standalone markup architecture preventing custom skin components from blocking execution
+    mediaSandboxContainer.innerHTML = `
+      <video class="cinema-bg-blur" id="liveBlurTrack" src="${objectRecord.proxy || objectRecord.url}" muted loop playsinline></video>
+      <video class="cinema-fg-player" id="liveActiveTrack" src="${objectRecord.proxy || objectRecord.url}" controls autoplay playsinline></video>
+    `;
+
+    const interactiveForegroundElement = mediaSandboxContainer.querySelector('#liveActiveTrack');
+    const standaloneBackgroundBlurElement = mediaSandboxContainer.querySelector('#liveBlurTrack');
+
+    // High performance stream synchronizer linking states
+    if (interactiveForegroundElement && standaloneBackgroundBlurElement) {
+      const linkSynchronizationMechanics = () => {
+        if (!interactiveForegroundElement.paused) {
+          standaloneBackgroundBlurElement.play().catch(() => {});
+        } else {
+          standaloneBackgroundBlurElement.pause();
+        }
+      };
+
+      interactiveForegroundElement.addEventListener('play', linkSynchronizationMechanics);
+      interactiveForegroundElement.addEventListener('pause', linkSynchronizationMechanics);
+      interactiveForegroundElement.addEventListener('seeking', () => {
+        standaloneBackgroundBlurElement.currentTime = interactiveForegroundElement.currentTime;
+      });
+      interactiveForegroundElement.addEventListener('timeupdate', () => {
+        if (Math.abs(standaloneBackgroundBlurElement.currentTime - interactiveForegroundElement.currentTime) > 0.12) {
+          standaloneBackgroundBlurElement.currentTime = interactiveForegroundElement.currentTime;
+        }
+      });
+
+      // Fire initial execution catch logic
+      interactiveForegroundElement.play().then(linkSynchronizationMechanics).catch(() => {});
     }
 
-    window.scrollTo({ top: 0, behavior: 'instant' });
-}
+    const segments = [
+      `<strong>@${objectRecord.author}</strong>`,
+      parseFormattedTimestamp(objectRecord.date),
+      computeReadableSize(objectRecord.size),
+      objectRecord.width && objectRecord.height ? `${objectRecord.width}×${objectRecord.height}` : '',
+    ].filter(Boolean);
+    
+    document.getElementById('theaterMetadataBlock').innerHTML = segments.join(' &nbsp;·&nbsp; ');
 
-searchEngineInput.oninput = (e) => {
-    const rawQuery = e.target.value.toLowerCase().trim();
-    mountGrid(registry.filter(a => a.name.toLowerCase().includes(rawQuery)));
-};
+    const downloadTriggerLink = document.getElementById('theaterDownloadBtn');
+    downloadTriggerLink.href = objectRecord.url;
+    downloadTriggerLink.setAttribute('download', objectRecord.name);
 
-window.onpopstate = (e) => {
-    if (e.state && e.state.layer === 'cinema') {
-        const correspondingRegistryObject = registry.find(a => a.name === e.state.name);
-        if (correspondingRegistryObject) renderCinemaViewport(correspondingRegistryObject);
-    } else {
-        renderSystemDeck();
-    }
-};
+    document.getElementById('cinemaTheaterModal').classList.add('active');
+    document.addEventListener('keydown', processGlobalKeyDownEsc);
+  }
 
-const targetTerminatingSlug = window.location.pathname.split('/').filter(Boolean).pop();
-const validatedBootRoute = registry.find(a => encodeURIComponent(a.name.replace(/\.[^/.]+$/, "")) === targetTerminatingSlug);
+  function deactivateCinemaTheater() {
+    document.getElementById('cinemaTheaterModal').classList.remove('active');
+    const dynamicSandboxNode = document.getElementById('cinemaPlayerSandbox');
+    dynamicSandboxNode.innerHTML = ''; // Terminate stream instances cleanly to free memory layout
+    document.removeEventListener('keydown', processGlobalKeyDownEsc);
+  }
 
-if (validatedBootRoute) {
-    renderCinemaViewport(validatedBootRoute);
-} else {
-    mountGrid(registry);
-}
+  function processOutsideOverlayClick(clickEvent) {
+    if (clickEvent.target === document.getElementById('cinemaTheaterModal')) deactivateCinemaTheater();
+  }
+
+  function processGlobalKeyDownEsc(keyEvent) { 
+    if (keyEvent.key === 'Escape') deactivateCinemaTheater(); 
+  }
+
+  function purgeLibraryContainer() {
+    libraryDatabase = [];
+    currentSelectionExt = 'all';
+    document.getElementById('controlToolbar').style.display = 'none';
+    updateStatusIndicator('Awaiting synchronization sequence initialization...');
+    renderDisplayGrid();
+  }
 </script>
 </body>
 </html>
