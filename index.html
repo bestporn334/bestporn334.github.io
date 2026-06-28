@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Vault — Liquid Glass Precision</title>
+<title>Studio Vault — Custom Component Edition</title>
 
-<link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video.js"></script>
 
 <style>
 /* --- Design Token Engine (iOS Comfortable + High Gloss Liquid Glass) --- */
@@ -93,7 +92,7 @@ header {
     transition: opacity 0.3s ease;
 }
 
-/* Dynamic Rule: Hides synchronization asset token counter automatically when squeezed thin */
+/* Hides the "synchronized" pill layout automatically when squeezed thin */
 @media (max-width: 600px) {
     .pill-badge {
         display: none !important;
@@ -174,11 +173,11 @@ header {
     color: var(--text-secondary);
 }
 
-/* --- Compact Above-The-Fold Fluid Cinema Container --- */
+/* --- Compact Cinema Theatre Setup (Dynamic Height Bounds) --- */
 .cinema-canvas {
     display: none;
     width: 100%;
-    max-width: 680px; /* Refined compact footprint dimension mapping */
+    max-width: 680px; /* Locked constraint limits so you don't scroll down the page */
     margin: 0 auto;
     padding: 20px 16px;
     flex-direction: column;
@@ -208,7 +207,7 @@ header {
     transform: translateY(-1px);
 }
 
-/* --- Anti-Glitch Ultra-Masked Theater Box --- */
+/* --- Advanced Anti-Glitch Mask Enclosure Box --- */
 .theater-enclosure {
     width: 100%;
     aspect-ratio: 16/9;
@@ -218,62 +217,38 @@ header {
     box-shadow: 0 24px 48px rgba(0,0,0,0.5);
     position: relative;
     
-    /* Dual Layer Masking Pipeline completely isolates rendering leaks and cuts off black artifacts */
+    /* Hardware Accelerated clipping masks block visual bleeding & corner glitches completely */
     overflow: hidden !important;
     clip-path: inset(0 round var(--ios-radius)) !important;
     -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
     -webkit-mask-image: -webkit-radial-gradient(white, black); 
 }
 
-/* --- Clean VideoJS Framework Overrides --- */
-.video-js {
+/* --- Web Component Sizing Fixes (Stops zoom-in resolution truncation) --- */
+video-player {
     width: 100% !important;
     height: 100% !important;
-    background-color: #000 !important;
+    display: block !important;
     border-radius: var(--ios-radius) !important;
     overflow: hidden !important;
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
-.video-js .vjs-tech {
-    object-fit: contain !important;
+video-skin {
     border-radius: var(--ios-radius) !important;
     overflow: hidden !important;
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
-/* Force browser native video engine controls shadow-DOM shadow layer to remain completely invisible */
-.video-js video::-webkit-media-controls {
+/* FIX: Forces massive source file videos to scale cleanly inside the small container box */
+video-player video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important; 
+    border-radius: var(--ios-radius) !important;
+}
+
+/* Strip native shadow controls layer immediately to avoid double overlapping instances */
+video-player video::-webkit-media-controls {
     display: none !important;
-}
-
-.video-js .vjs-control-bar {
-    background: rgba(10, 12, 22, 0.6) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    height: 44px;
-}
-
-.video-js .vjs-big-play-button {
-    background: rgba(255, 255, 255, 0.08) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 50% !important;
-    width: 54px !important;
-    height: 54px !important;
-    line-height: 52px !important;
-    margin-top: -27px !important;
-    margin-left: -27px !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    transition: all 0.3s var(--fluid-bezier) !important;
-}
-
-.video-js:hover .vjs-big-play-button {
-    transform: scale(1.08);
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    background: rgba(255, 255, 255, 0.15) !important;
 }
 
 .cinema-header-title {
@@ -348,9 +323,8 @@ const registry = [
 const mainGrid = document.getElementById("live-grid-container");
 const searchEngineInput = document.getElementById("directory-search");
 const layoutAssetCounter = document.getElementById("runtime-asset-counter");
-window.activePlayerInstance = null; 
 
-// --- Build UI Core Array Matrix ---
+// --- Build Grid Canvas UI ---
 function mountGrid(items) {
     mainGrid.innerHTML = "";
     layoutAssetCounter.textContent = `${items.length} files synchronized`;
@@ -385,7 +359,7 @@ function mountGrid(items) {
     initPrecisionHoverEngine();
 }
 
-// --- Dynamic Hover Previews ---
+// --- Hover Preview Automation Layer ---
 function initPrecisionHoverEngine() {
     document.querySelectorAll('.media-window').forEach(windowNode => {
         const innerVideo = windowNode.querySelector('video');
@@ -417,7 +391,7 @@ function initPrecisionHoverEngine() {
     });
 }
 
-// --- Push-State Structural Routing Framework ---
+// --- Unified Navigation Framework Router ---
 function routeToCinemaView(slug, fullAssetIdentifier) {
     const assetInstance = registry.find(a => a.name === fullAssetIdentifier);
     if (!assetInstance) return;
@@ -433,11 +407,6 @@ function executeBackNavigation() {
 }
 
 function renderSystemDeck() {
-    if (window.activePlayerInstance) {
-        window.activePlayerInstance.dispose();
-        window.activePlayerInstance = null;
-    }
-
     document.getElementById("cinema-wrapper-view").style.display = "none";
     document.getElementById("global-navbar").style.display = "flex";
     document.getElementById("deck-wrapper-view").style.display = "block";
@@ -445,11 +414,6 @@ function renderSystemDeck() {
 }
 
 function renderCinemaViewport(targetAsset) {
-    if (window.activePlayerInstance) {
-        window.activePlayerInstance.dispose();
-        window.activePlayerInstance = null;
-    }
-
     document.getElementById("deck-wrapper-view").style.display = "none";
     document.getElementById("global-navbar").style.display = "none";
     
@@ -462,35 +426,26 @@ function renderCinemaViewport(targetAsset) {
         <span class="ios-tag">Resolution: ${targetAsset.resolution}</span>
     `;
 
-    // Strict fix: The "controls" parameter is missing on purpose to prevent native shadow DOM replication
+    // Mounted: Authenticated structural web component block mapping configuration rules
     const injectionPoint = document.getElementById("video-injection-nexus");
     injectionPoint.innerHTML = `
-        <video id="studio-core-player" class="video-js vjs-default-skin vjs-big-play-centered" playsinline>
-            <source src="${targetAsset.video}" type="video/mp4">
-        </video>
+        <video-player controls autoplay>
+            <video-skin>
+                <video src="${targetAsset.video}" playsinline></video>
+            </video-skin>
+        </video-player>
     `;
-
-    // Initialize official responsive player logic framework configuration parameters
-    window.activePlayerInstance = videojs("studio-core-player", {
-        controls: true,
-        autoplay: true,
-        fluid: true, 
-        responsive: true,
-        controlBar: {
-            skipButtons: { forward: 10, backward: 10 }
-        }
-    });
 
     window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// --- Live Evaluator Query Execution Hook ---
+// --- Live Filtering Execution Node ---
 searchEngineInput.oninput = (e) => {
     const rawQuery = e.target.value.toLowerCase().trim();
     mountGrid(registry.filter(a => a.name.toLowerCase().includes(rawQuery)));
 };
 
-// --- Popstate Back-Navigation Watcher ---
+// --- History State Event Watcher ---
 window.onpopstate = (e) => {
     if (e.state && e.state.layer === 'cinema') {
         const correspondingRegistryObject = registry.find(a => a.name === e.state.name);
@@ -500,7 +455,7 @@ window.onpopstate = (e) => {
     }
 };
 
-// --- Runtime Boot Vector Verification ---
+// --- Initialization Entry Sequence ---
 const targetTerminatingSlug = window.location.pathname.split('/').filter(Boolean).pop();
 const validatedBootRoute = registry.find(a => encodeURIComponent(a.name.replace(/\.[^/.]+$/, "")) === targetTerminatingSlug);
 
