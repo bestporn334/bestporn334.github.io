@@ -68,12 +68,6 @@ header {
     font-size: 14px;
 }
 
-.search-wrapper input:focus {
-    outline: none;
-    border-color: var(--liquid-border-hover);
-    background: rgba(255, 255, 255, 0.06);
-}
-
 .pill-badge {
     font-size: 12px;
     font-weight: 500;
@@ -180,7 +174,7 @@ header {
     cursor: pointer;
 }
 
-/* --- Fixed Anti-Glitch Theatre Enclosure --- */
+/* --- Unified Theater Enclosure Container --- */
 .theater-enclosure {
     width: 100%;
     aspect-ratio: 16/9;
@@ -194,29 +188,44 @@ header {
     -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
 }
 
-/* --- Global Shadow and Component Structural Enforcement Rules --- */
+/* --- Global Player Rules --- */
 video-player {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    position: relative !important;
     width: 100% !important;
     height: 100% !important;
     display: block !important;
-    z-index: 2;
-    background: transparent !important;
+    z-index: 1;
 }
 
+/* The true backdrop layer containing the real video object layout structure */
 video-skin {
     display: block !important;
     width: 100% !important;
     height: 100% !important;
-    background: transparent !important;
     position: relative !important;
+    overflow: hidden !important;
 }
 
-/* Base style fallback rules before scripts override shadow elements */
-video-player video {
+/* Real-time blurring background stream rendering directly out of the video player boundary canvas box */
+.backdrop-blur-canvas {
+    position: absolute !important;
+    top: -10% !important;
+    left: -10% !important;
+    width: 120% !important;
+    height: 120% !important;
+    object-fit: cover !important;
+    filter: blur(30px) brightness(0.5) saturate(140%) !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+/* Sharp, contained native target rendering completely unified */
+video-player video.fg-canvas-track {
+    width: 100% !important;
+    height: 100% !important;
     object-fit: contain !important;
+    position: relative !important;
+    z-index: 2 !important;
     background: transparent !important;
 }
 
@@ -389,70 +398,41 @@ function renderCinemaViewport(targetAsset) {
 
     const injectionPoint = document.getElementById("video-injection-nexus");
     
-    // Clean injection architecture setup
+    // Injected perfectly inside the native custom layout component
     injectionPoint.innerHTML = `
         <video-player controls autoplay>
             <video-skin>
-                <video id="main-fg-track" src="${targetAsset.video}" playsinline></video>
+                <video class="backdrop-blur-canvas" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
+                <video class="fg-canvas-track" id="main-fg-track" src="${targetAsset.video}" playsinline></video>
             </video-skin>
         </video-player>
     `;
 
-    const playerComponent = injectionPoint.querySelector('video-player');
-
-    // Intercept web component shadow implementation to lock fit layout and sync backdrop blur
     function applyShadowGroundedFixes() {
         const targetVideo = injectionPoint.querySelector('#main-fg-track');
-        if (!targetVideo) return;
+        const backgroundBlurTrack = injectionPoint.querySelector('#bg-blur-track');
+        if (!targetVideo || !backgroundBlurTrack) return;
 
-        // Force containment on the foreground track layout
+        // Strict configuration alignment checks
         targetVideo.style.setProperty('object-fit', 'contain', 'important');
         targetVideo.style.setProperty('width', '100%', 'important');
         targetVideo.style.setProperty('height', '100%', 'important');
         targetVideo.style.setProperty('background', 'transparent', 'important');
 
-        // Create, position, and inject background track inside component node boundaries to match rendering timelines
-        if (!injectionPoint.querySelector('#bg-blur-track')) {
-            const backgroundBlurTrack = document.createElement('video');
-            backgroundBlurTrack.id = 'bg-blur-track';
-            backgroundBlurTrack.src = targetAsset.video;
-            backgroundBlurTrack.muted = true;
-            backgroundBlurTrack.loop = true;
-            backgroundBlurTrack.setAttribute('playsinline', '');
-            
-            // Set styles for structural background track placement explicitly
-            Object.assign(backgroundBlurTrack.style, {
-                position: 'absolute',
-                top: '-10%',
-                left: '-10%',
-                width: '120%',
-                height: '120%',
-                objectFit: 'cover',
-                filter: 'blur(24px) brightness(0.55) saturate(140%)',
-                zIndex: '0',
-                pointerEvents: 'none'
-            });
-
-            // Put background video right behind the interactive foreground video layer
-            targetVideo.parentNode.insertBefore(backgroundBlurTrack, targetVideo);
-            targetVideo.style.zIndex = '2';
-
-            // Connect track sync hooks
-            targetVideo.addEventListener('play', () => backgroundBlurTrack.play());
-            targetVideo.addEventListener('pause', () => backgroundBlurTrack.pause());
-            targetVideo.addEventListener('seeking', () => backgroundBlurTrack.currentTime = targetVideo.currentTime);
-            targetVideo.addEventListener('timeupdate', () => {
-                if (Math.abs(backgroundBlurTrack.currentTime - targetVideo.currentTime) > 0.2) {
-                    backgroundBlurTrack.currentTime = targetVideo.currentTime;
-                }
-            });
-            
-            // Sync initial state if auto-playing out of gate
-            if (!targetVideo.paused) { backgroundBlurTrack.play().catch(() => {}); }
-        }
+        // Connect track execution hooks flawlessly
+        targetVideo.addEventListener('play', () => backgroundBlurTrack.play());
+        targetVideo.addEventListener('pause', () => backgroundBlurTrack.pause());
+        targetVideo.addEventListener('seeking', () => backgroundBlurTrack.currentTime = targetVideo.currentTime);
+        targetVideo.addEventListener('timeupdate', () => {
+            if (Math.abs(backgroundBlurTrack.currentTime - targetVideo.currentTime) > 0.2) {
+                backgroundBlurTrack.currentTime = targetVideo.currentTime;
+            }
+        });
+        
+        if (!targetVideo.paused) { backgroundBlurTrack.play().catch(() => {}); }
     }
 
-    // Run layout adjustments immediately and again on metadata loading to fight delayed runtime adjustments
+    // Force styling verification cycles
     applyShadowGroundedFixes();
     const foregroundVideo = injectionPoint.querySelector('#main-fg-track');
     if (foregroundVideo) {
