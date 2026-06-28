@@ -6,7 +6,7 @@
 <title>Discord Video Library</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
   :root {
     --bg: #0e0f11;
     --surface: #16181c;
@@ -24,7 +24,7 @@
     --radius: 8px;
     --radius-lg: 14px;
   }
-
+ 
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg);
@@ -33,10 +33,10 @@
     font-size: 14px;
     line-height: 1.5;
   }
-
+ 
   /* Layout */
   .app { max-width: 1280px; margin: 0 auto; padding: 0 24px 60px; }
-
+ 
   /* Header */
   .topbar {
     display: flex;
@@ -66,7 +66,7 @@
     border-radius: 20px;
     display: none;
   }
-
+ 
   /* Config panel */
   .config {
     background: var(--surface);
@@ -104,7 +104,7 @@
   }
   .field input:focus { border-color: var(--accent); }
   .field input::placeholder { color: var(--text-dim); font-family: -apple-system, sans-serif; }
-
+ 
   .config-actions { display: flex; align-items: center; gap: 10px; }
   .btn {
     display: inline-flex; align-items: center; gap: 7px;
@@ -125,14 +125,14 @@
     border: 1px solid var(--border);
   }
   .btn-ghost:hover { color: var(--text); border-color: var(--border-hover); }
-
+ 
   .status-msg {
     margin-left: auto;
     font-size: 12px;
     color: var(--text-muted);
   }
   .status-msg.error { color: #f47f7f; }
-
+ 
   .tip {
     margin-top: 14px;
     padding: 10px 14px;
@@ -144,7 +144,7 @@
     line-height: 1.6;
   }
   .tip strong { color: #e2b95a; }
-
+ 
   /* Progress */
   .progress-bar-wrap {
     height: 3px;
@@ -161,7 +161,7 @@
     width: 0%;
     transition: width 0.3s;
   }
-
+ 
   /* Toolbar */
   .toolbar {
     display: flex;
@@ -214,7 +214,7 @@
   }
   .search-input:focus { border-color: var(--accent); width: 220px; }
   .search-input::placeholder { color: var(--text-dim); }
-
+ 
   /* Sort */
   .sort-select {
     background: var(--surface);
@@ -226,14 +226,14 @@
     outline: none;
     cursor: pointer;
   }
-
+ 
   /* Grid */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
     gap: 16px;
   }
-
+ 
   /* Empty */
   .empty {
     grid-column: 1 / -1;
@@ -251,7 +251,7 @@
   .empty-icon svg { width: 28px; height: 28px; stroke: var(--text-dim); fill: none; }
   .empty h3 { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
   .empty p { font-size: 13px; }
-
+ 
   /* Card */
   .card {
     background: var(--surface);
@@ -267,7 +267,7 @@
     transform: translateY(-2px);
   }
   .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
+ 
   .thumb {
     position: relative;
     width: 100%;
@@ -289,7 +289,7 @@
   }
   .thumb-placeholder svg { width: 32px; height: 32px; stroke: currentColor; fill: none; }
   .thumb-placeholder span { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
-
+ 
   .play-overlay {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -305,7 +305,7 @@
     display: flex; align-items: center; justify-content: center;
   }
   .play-btn svg { width: 18px; height: 18px; fill: #111; margin-left: 2px; }
-
+ 
   .duration-badge {
     position: absolute;
     bottom: 8px; right: 8px;
@@ -318,7 +318,7 @@
     font-family: 'SF Mono', monospace;
     backdrop-filter: blur(4px);
   }
-
+ 
   .card-body { padding: 12px 14px; }
   .card-name {
     font-size: 13px;
@@ -347,7 +347,7 @@
   }
   .meta-text { font-size: 11px; color: var(--text-muted); }
   .meta-dot { color: var(--text-dim); font-size: 10px; }
-
+ 
   .card-author {
     display: flex;
     align-items: center;
@@ -365,7 +365,7 @@
     flex-shrink: 0;
   }
   .author-name { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
+ 
   /* Modal */
   .modal-overlay {
     display: none;
@@ -441,7 +441,7 @@
   }
   .btn-download:hover { background: var(--accent-hover); }
   .btn-download svg { width: 15px; height: 15px; stroke: #fff; fill: none; flex-shrink: 0; }
-
+ 
   @media (max-width: 600px) {
     .config-grid { grid-template-columns: 1fr; }
     .toolbar { flex-direction: column; align-items: flex-start; }
@@ -454,7 +454,7 @@
 </head>
 <body>
 <div class="app">
-
+ 
   <!-- Header -->
   <div class="topbar">
     <div class="logo">
@@ -468,7 +468,7 @@
     </div>
     <div class="topbar-count" id="topbarCount"></div>
   </div>
-
+ 
   <!-- Config -->
   <div class="config">
     <div class="config-grid">
@@ -500,7 +500,7 @@
       <strong>How to find your token:</strong> Open Discord in your browser → press F12 → go to the Network tab → click any request → look for the <strong>Authorization</strong> header value. Your token stays in this file and is never sent anywhere except Discord's API.
     </div>
   </div>
-
+ 
   <!-- Toolbar -->
   <div class="toolbar" id="toolbar" style="display:none">
     <div class="filter-pills" id="filterPills">
@@ -517,7 +517,7 @@
       <input type="text" class="search-input" id="searchBox" placeholder="Search filenames…" oninput="renderGrid()">
     </div>
   </div>
-
+ 
   <!-- Grid -->
   <div class="grid" id="grid">
     <div class="empty">
@@ -528,9 +528,9 @@
       <p>Enter your token and channel ID above, then hit Fetch videos.</p>
     </div>
   </div>
-
+ 
 </div>
-
+ 
 <!-- Modal -->
 <div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
   <div class="modal">
@@ -550,41 +550,41 @@
     </div>
   </div>
 </div>
-
+ 
 <script>
   const VIDEO_EXTS = ['mp4','mov','webm','mkv','avi','m4v','wmv','flv','ogg','ts','3gp'];
   let allVideos = [];
   let activeExt = 'all';
-
+ 
   function ext(name) { return (name.split('.').pop() || '').toLowerCase(); }
-
+ 
   function fmtSize(b) {
     if (!b) return '';
     if (b < 1024) return b + ' B';
     if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
     return (b / 1048576).toFixed(1) + ' MB';
   }
-
+ 
   function fmtDate(s) {
     return new Date(s).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   }
-
+ 
   function fmtDuration(secs) {
     if (!secs) return null;
     const m = Math.floor(secs / 60), s = Math.floor(secs % 60);
     return `${m}:${String(s).padStart(2,'0')}`;
   }
-
+ 
   function initials(name) {
     return (name || '?').slice(0,1).toUpperCase();
   }
-
+ 
   function setStatus(msg, type) {
     const el = document.getElementById('statusMsg');
     el.textContent = msg;
     el.className = 'status-msg' + (type ? ' ' + type : '');
   }
-
+ 
   function setProgress(pct) {
     const wrap = document.getElementById('progressWrap');
     const bar = document.getElementById('progressBar');
@@ -593,40 +593,40 @@
     bar.style.width = Math.min(100, pct) + '%';
     if (pct >= 100) setTimeout(() => { wrap.style.display = 'none'; }, 600);
   }
-
+ 
   async function fetchVideos() {
     const token = document.getElementById('token').value.trim();
     const channelId = document.getElementById('channelId').value.trim();
     const limit = Math.min(500, Math.max(10, parseInt(document.getElementById('limit').value) || 200));
-
+ 
     if (!token || !channelId) { setStatus('Enter token and channel ID', 'error'); return; }
-
+ 
     const btn = document.getElementById('fetchBtn');
     btn.disabled = true;
     allVideos = [];
     setStatus('Scanning messages…');
     setProgress(5);
-
+ 
     try {
       let before = null, fetched = 0;
-
+ 
       while (fetched < limit) {
         const batchSize = Math.min(100, limit - fetched);
         let url = `https://discord.com/api/v10/channels/${channelId}/messages?limit=${batchSize}`;
         if (before) url += `&before=${before}`;
-
+ 
         const res = await fetch(url, {
           headers: { 'Authorization': token, 'Content-Type': 'application/json' }
         });
-
+ 
         if (!res.ok) {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.message || `HTTP ${res.status}`);
         }
-
+ 
         const msgs = await res.json();
         if (!msgs.length) break;
-
+ 
         for (const m of msgs) {
           for (const a of (m.attachments || [])) {
             const e = ext(a.filename);
@@ -660,7 +660,7 @@
             }
           }
         }
-
+ 
         fetched += msgs.length;
         setProgress(Math.round((fetched / limit) * 90));
         setStatus(`Scanned ${fetched} messages — found ${allVideos.length} video${allVideos.length !== 1 ? 's' : ''}…`);
@@ -668,24 +668,24 @@
         if (msgs.length < batchSize) break;
         await new Promise(r => setTimeout(r, 250));
       }
-
+ 
       setProgress(100);
       buildToolbar();
       renderGrid();
       setStatus(`Found ${allVideos.length} video${allVideos.length !== 1 ? 's' : ''} across ${fetched} messages`);
-
+ 
       const count = document.getElementById('topbarCount');
       count.textContent = allVideos.length + ' videos';
       count.style.display = allVideos.length ? 'block' : 'none';
-
+ 
     } catch (e) {
       setStatus('Error: ' + e.message, 'error');
       setProgress(0);
     }
-
+ 
     btn.disabled = false;
   }
-
+ 
   function buildToolbar() {
     const exts = [...new Set(allVideos.map(v => v.ext))].sort();
     const pills = document.getElementById('filterPills');
@@ -700,14 +700,14 @@
     });
     document.getElementById('toolbar').style.display = allVideos.length ? 'flex' : 'none';
   }
-
+ 
   function setFilter(btn, e) {
     activeExt = e;
     document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
     renderGrid();
   }
-
+ 
   function getFiltered() {
     const q = (document.getElementById('searchBox').value || '').toLowerCase();
     const sort = document.getElementById('sortSelect').value;
@@ -721,7 +721,7 @@
     else if (sort === 'name') vids.sort((a,b) => a.name.localeCompare(b.name));
     return vids;
   }
-
+ 
   function renderGrid() {
     const vids = getFiltered();
     const grid = document.getElementById('grid');
@@ -736,7 +736,7 @@
         </div>`;
       return;
     }
-
+ 
     grid.innerHTML = vids.map((v) => {
       const idx = allVideos.indexOf(v);
       const dur = v.duration ? fmtDuration(v.duration) : '';
@@ -774,14 +774,14 @@
       </div>`;
     }).join('');
   }
-
+ 
   function openModal(idx) {
     const v = allVideos[idx];
     document.getElementById('modalTitle').textContent = v.name;
     const vid = document.getElementById('modalVideo');
     vid.src = v.proxy || v.url;
     vid.play().catch(() => {});
-
+ 
     const parts = [
       v.author ? `<strong>@${v.author}</strong>` : '',
       fmtDate(v.date),
@@ -789,28 +789,28 @@
       v.width && v.height ? `${v.width}×${v.height}` : '',
     ].filter(Boolean);
     document.getElementById('modalMeta').innerHTML = parts.join(' &nbsp;·&nbsp; ');
-
+ 
     const dl = document.getElementById('modalDl');
     dl.href = v.url;
     dl.download = v.name;
-
+ 
     document.getElementById('modal').classList.add('open');
     document.addEventListener('keydown', handleEsc);
   }
-
+ 
   function closeModal() {
     document.getElementById('modal').classList.remove('open');
     const vid = document.getElementById('modalVideo');
     vid.pause(); vid.src = '';
     document.removeEventListener('keydown', handleEsc);
   }
-
+ 
   function handleOverlayClick(e) {
     if (e.target === document.getElementById('modal')) closeModal();
   }
-
+ 
   function handleEsc(e) { if (e.key === 'Escape') closeModal(); }
-
+ 
   function clearAll() {
     allVideos = [];
     activeExt = 'all';
@@ -820,9 +820,10 @@
     setProgress(0);
     renderGrid();
   }
-
+ 
   document.getElementById('token').addEventListener('keydown', e => { if (e.key === 'Enter') fetchVideos(); });
   document.getElementById('channelId').addEventListener('keydown', e => { if (e.key === 'Enter') fetchVideos(); });
 </script>
 </body>
 </html>
+ 
