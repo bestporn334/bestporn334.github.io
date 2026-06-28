@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Vault — Liquid Glass Edition</title>
+<title>Studio Vault — Liquid Glass Precision</title>
 
 <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
 <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -17,7 +17,7 @@
     --liquid-border-hover: rgba(255, 255, 255, 0.22);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --ios-radius: 20px;
+    --ios-radius: 16px;
     --ios-radius-lg: 24px;
     --fluid-bezier: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -37,7 +37,7 @@ body {
     overflow-x: hidden;
 }
 
-/* --- Navigation Infrastructure --- */
+/* --- Dynamic Responsive Navigation Infrastructure --- */
 header {
     position: sticky;
     top: 0;
@@ -50,6 +50,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
 }
 
 .search-wrapper {
@@ -88,16 +89,24 @@ header {
     border-radius: var(--ios-radius-lg);
     border: 1px solid var(--liquid-border);
     color: var(--text-secondary);
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
 }
 
-/* --- High Presence Ultra-Clean 10% Scaled Thumbnail Grid --- */
+/* Dynamic Rule: Hides synchronization asset token counter automatically when squeezed thin */
+@media (max-width: 600px) {
+    .pill-badge {
+        display: none !important;
+    }
+}
+
+/* --- High Presence Ultra-Clean Thumbnail Grid --- */
 .grid-canvas {
     max-width: 1600px;
     margin: auto;
     padding: 32px;
     display: grid;
     gap: 24px;
-    /* Responsive fluid track assignment auto-recalculates clean positions on resize */
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
@@ -132,8 +141,7 @@ header {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    pointer-events: none; /* Disables double elements/controls on card layer */
-    transition: transform 0.5s var(--fluid-bezier);
+    pointer-events: none; 
 }
 
 .card-description-block {
@@ -166,15 +174,15 @@ header {
     color: var(--text-secondary);
 }
 
-/* --- High Precision Above-The-Fold Compact Cinema Canvas --- */
+/* --- Compact Above-The-Fold Fluid Cinema Container --- */
 .cinema-canvas {
     display: none;
     width: 100%;
-    max-width: 720px; /* Highly optimized sizing layout constraint */
+    max-width: 680px; /* Refined compact footprint dimension mapping */
     margin: 0 auto;
-    padding: 24px 16px;
+    padding: 20px 16px;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     animation: stageIn 0.4s var(--fluid-bezier);
 }
 
@@ -200,31 +208,43 @@ header {
     transform: translateY(-1px);
 }
 
-/* --- Pure Zero-Glitch Theater Box Wrapper --- */
+/* --- Anti-Glitch Ultra-Masked Theater Box --- */
 .theater-enclosure {
     width: 100%;
     aspect-ratio: 16/9;
     background: #000;
-    border-radius: var(--ios-radius);
+    border-radius: var(--ios-radius) !important;
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 24px 48px rgba(0,0,0,0.5);
     position: relative;
     
-    /* Anti-glitch masking to eliminate corner artifacts */
-    clip-path: inset(0 round var(--ios-radius));
-    -webkit-clip-path: inset(0 round var(--ios-radius));
-    overflow: hidden;
+    /* Dual Layer Masking Pipeline completely isolates rendering leaks and cuts off black artifacts */
+    overflow: hidden !important;
+    clip-path: inset(0 round var(--ios-radius)) !important;
+    -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
+    -webkit-mask-image: -webkit-radial-gradient(white, black); 
 }
 
-/* --- Customized Liquid Glass Overrides for VideoJS Engine UI --- */
+/* --- Clean VideoJS Framework Overrides --- */
 .video-js {
     width: 100% !important;
     height: 100% !important;
     background-color: #000 !important;
+    border-radius: var(--ios-radius) !important;
+    overflow: hidden !important;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .video-js .vjs-tech {
     object-fit: contain !important;
+    border-radius: var(--ios-radius) !important;
+    overflow: hidden !important;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+/* Force browser native video engine controls shadow-DOM shadow layer to remain completely invisible */
+.video-js video::-webkit-media-controls {
+    display: none !important;
 }
 
 .video-js .vjs-control-bar {
@@ -241,11 +261,11 @@ header {
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 50% !important;
-    width: 60px !important;
-    height: 60px !important;
-    line-height: 58px !important;
-    margin-top: -30px !important;
-    margin-left: -30px !important;
+    width: 54px !important;
+    height: 54px !important;
+    line-height: 52px !important;
+    margin-top: -27px !important;
+    margin-left: -27px !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     transition: all 0.3s var(--fluid-bezier) !important;
 }
@@ -257,7 +277,7 @@ header {
 }
 
 .cinema-header-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     letter-spacing: -0.2px;
 }
@@ -280,7 +300,7 @@ header {
 
 <header id="global-navbar">
     <div class="search-wrapper">
-        <input type="text" id="directory-search" placeholder="Search operational array...">
+        <input type="text" id="directory-search" placeholder="Search parameters...">
     </div>
     <div class="pill-badge" id="runtime-asset-counter">0 modules mounted</div>
 </header>
@@ -328,7 +348,7 @@ const registry = [
 const mainGrid = document.getElementById("live-grid-container");
 const searchEngineInput = document.getElementById("directory-search");
 const layoutAssetCounter = document.getElementById("runtime-asset-counter");
-window.activePlayerInstance = null; // Global VideoJS reference layer
+window.activePlayerInstance = null; 
 
 // --- Build UI Core Array Matrix ---
 function mountGrid(items) {
@@ -347,7 +367,6 @@ function mountGrid(items) {
         const virtualSlug = encodeURIComponent(item.name.replace(/\.[^/.]+$/, ""));
         structuralCard.onclick = () => routeToCinemaView(virtualSlug, item.name);
 
-        /* Thumbnail boxes have controls strictly disabled to avoid double player glitching */
         structuralCard.innerHTML = `
             <div class="media-window">
                 <video muted loop preload="metadata" src="${item.video}"></video>
@@ -414,7 +433,6 @@ function executeBackNavigation() {
 }
 
 function renderSystemDeck() {
-    // Cleanly destroy active instances to prevent memory leaks or audio playback bugs
     if (window.activePlayerInstance) {
         window.activePlayerInstance.dispose();
         window.activePlayerInstance = null;
@@ -444,18 +462,20 @@ function renderCinemaViewport(targetAsset) {
         <span class="ios-tag">Resolution: ${targetAsset.resolution}</span>
     `;
 
-    // Inject native layout hook tailored exactly for VideoJS configuration
+    // Strict fix: The "controls" parameter is missing on purpose to prevent native shadow DOM replication
     const injectionPoint = document.getElementById("video-injection-nexus");
     injectionPoint.innerHTML = `
-        <video id="studio-core-player" class="video-js vjs-default-skin vjs-big-play-centered" controls autoplay playsinline>
+        <video id="studio-core-player" class="video-js vjs-default-skin vjs-big-play-centered" playsinline>
             <source src="${targetAsset.video}" type="video/mp4">
         </video>
     `;
 
-    // Initialize official VideoJS module with explicit fluid rules
+    // Initialize official responsive player logic framework configuration parameters
     window.activePlayerInstance = videojs("studio-core-player", {
+        controls: true,
+        autoplay: true,
+        fluid: true, 
         responsive: true,
-        fluid: false,
         controlBar: {
             skipButtons: { forward: 10, backward: 10 }
         }
