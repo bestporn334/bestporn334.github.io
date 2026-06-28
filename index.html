@@ -8,7 +8,7 @@
 <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video.js"></script>
 
 <style>
-/* --- Design Token Engine (iOS Comfortable + High Gloss Liquid Glass) --- */
+/* --- Design Token Engine --- */
 :root {
     --liquid-bg: rgba(255, 255, 255, 0.015);
     --liquid-surface: rgba(255, 255, 255, 0.04);
@@ -36,7 +36,7 @@ body {
     overflow-x: hidden;
 }
 
-/* --- Dynamic Responsive Navigation Infrastructure --- */
+/* --- Navigation --- */
 header {
     position: sticky;
     top: 0;
@@ -62,20 +62,16 @@ header {
     padding: 10px 20px;
     background: var(--liquid-bg);
     backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--liquid-border);
     border-radius: var(--ios-radius-lg);
     color: #fff;
     font-size: 14px;
-    transition: all 0.4s var(--fluid-bezier);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.02);
 }
 
 .search-wrapper input:focus {
     outline: none;
     border-color: var(--liquid-border-hover);
     background: rgba(255, 255, 255, 0.06);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .pill-badge {
@@ -83,22 +79,17 @@ header {
     font-weight: 500;
     background: var(--liquid-surface);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     padding: 8px 18px;
     border-radius: var(--ios-radius-lg);
     border: 1px solid var(--liquid-border);
     color: var(--text-secondary);
-    white-space: nowrap;
-    transition: opacity 0.3s ease;
 }
 
 @media (max-width: 600px) {
-    .pill-badge {
-        display: none !important;
-    }
+    .pill-badge { display: none !important; }
 }
 
-/* --- High Presence Ultra-Clean Thumbnail Grid --- */
+/* --- Thumbnail Deck Canvas --- */
 .grid-canvas {
     max-width: 1600px;
     margin: auto;
@@ -111,20 +102,16 @@ header {
 .glass-deck-card {
     background: var(--liquid-bg);
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--liquid-border);
     border-radius: var(--ios-radius-lg);
     overflow: hidden;
     cursor: pointer;
     transition: all 0.4s var(--fluid-bezier);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.03), 0 4px 20px rgba(0,0,0,0.15);
 }
 
 .glass-deck-card:hover {
     transform: scale(1.03) translateY(-2px);
     border-color: var(--liquid-border-hover);
-    background: rgba(255, 255, 255, 0.05);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.08), 0 16px 36px rgba(0, 0, 0, 0.35);
 }
 
 .media-window {
@@ -144,13 +131,11 @@ header {
 
 .card-description-block {
     padding: 14px 18px 16px 18px;
-    background: linear-gradient(to top, rgba(255,255,255,0.01), transparent);
 }
 
 .asset-title {
     font-size: 13px;
     font-weight: 600;
-    letter-spacing: -0.1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -164,15 +149,13 @@ header {
 
 .ios-tag {
     font-size: 10px;
-    font-weight: 500;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.04);
     padding: 3px 8px;
     border-radius: 6px;
     color: var(--text-secondary);
 }
 
-/* --- Compact Cinema Theatre Setup (Dynamic Height Bounds) --- */
+/* --- Cinema View Layout Wrapper --- */
 .cinema-canvas {
     display: none;
     width: 100%;
@@ -188,7 +171,6 @@ header {
     align-self: flex-start;
     background: var(--liquid-surface);
     backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--liquid-border);
     color: var(--text-primary);
     padding: 8px 18px;
@@ -196,17 +178,9 @@ header {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s var(--fluid-bezier);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
 }
 
-.liquid-action-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--liquid-border-hover);
-    transform: translateY(-1px);
-}
-
-/* --- Advanced Anti-Glitch Mask Enclosure Box --- */
+/* --- Fixed Anti-Glitch Theatre Enclosure --- */
 .theater-enclosure {
     width: 100%;
     aspect-ratio: 16/9;
@@ -216,50 +190,53 @@ header {
     box-shadow: 0 24px 48px rgba(0,0,0,0.5);
     position: relative;
     overflow: hidden !important;
+    /* Enforces strict clip-path bounding to kill outer bleed corner artifacts */
     clip-path: inset(0 round var(--ios-radius)) !important;
     -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
-    -webkit-mask-image: -webkit-radial-gradient(white, black); 
 }
 
-/* --- Dynamic Backdrop Layer Styling --- */
-.blurred-video-backdrop {
+/* --- Blurred Background Environment Backdrop Layout --- */
+.video-blur-environment-layer {
     position: absolute;
     top: -10%;
     left: -10%;
     width: 120% !important;
     height: 120% !important;
     object-fit: cover !important;
-    filter: blur(25px) brightness(0.6);
-    transform: scale(1.1);
+    filter: blur(24px) brightness(0.55) saturate(140%);
     z-index: 1;
     pointer-events: none;
 }
 
-/* --- Web Component Architecture --- */
+/* --- Custom Native Web Components Overrides --- */
 video-player {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 100% !important;
     height: 100% !important;
     display: block !important;
-    border-radius: var(--ios-radius) !important;
-    overflow: hidden !important;
-    position: relative;
     z-index: 2;
+    background: transparent !important;
 }
 
 video-skin {
-    border-radius: var(--ios-radius) !important;
-    overflow: hidden !important;
-    background: transparent !important; /* Allow blurred background to reflect from below */
-}
-
-/* Sharp foreground layer fitting resolution bounds dynamically */
-video-player video.fg-player-track {
+    display: block !important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: contain !important; 
-    border-radius: var(--ios-radius) !important;
-    position: relative;
+    background: transparent !important;
+}
+
+/* FIX: Forces massive files to cleanly conform using contain, avoiding screen-cutoff glitching */
+video-player video.fg-canvas-track {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
     z-index: 3;
+    background: transparent !important;
 }
 
 video-player video::-webkit-media-controls {
@@ -269,7 +246,6 @@ video-player video::-webkit-media-controls {
 .cinema-header-title {
     font-size: 15px;
     font-weight: 700;
-    letter-spacing: -0.2px;
 }
 
 @keyframes stageIn {
@@ -281,7 +257,6 @@ video-player video::-webkit-media-controls {
     text-align: center;
     padding: 80px 0;
     color: var(--text-secondary);
-    font-size: 14px;
     grid-column: 1/-1;
 }
 </style>
@@ -339,20 +314,18 @@ const mainGrid = document.getElementById("live-grid-container");
 const searchEngineInput = document.getElementById("directory-search");
 const layoutAssetCounter = document.getElementById("runtime-asset-counter");
 
-// --- Build Grid Canvas UI ---
 function mountGrid(items) {
     mainGrid.innerHTML = "";
     layoutAssetCounter.textContent = `${items.length} files synchronized`;
 
     if (items.length === 0) {
-        mainGrid.innerHTML = `<div class="empty-state-notice">Zero operational assets match query parameters.</div>`;
+        mainGrid.innerHTML = `<div class="empty-state-notice">Zero matching assets.</div>`;
         return;
     }
 
     items.forEach(item => {
         const structuralCard = document.createElement("div");
         structuralCard.className = "glass-deck-card";
-        
         const virtualSlug = encodeURIComponent(item.name.replace(/\.[^/.]+$/, ""));
         structuralCard.onclick = () => routeToCinemaView(virtualSlug, item.name);
 
@@ -374,18 +347,14 @@ function mountGrid(items) {
     initPrecisionHoverEngine();
 }
 
-// --- Hover Preview Automation Layer ---
 function initPrecisionHoverEngine() {
     document.querySelectorAll('.media-window').forEach(windowNode => {
         const innerVideo = windowNode.querySelector('video');
         let executionTimer;
 
         windowNode.onmouseenter = () => {
-            if (innerVideo.duration) {
-                processMidpointPlayback(innerVideo);
-            } else {
-                innerVideo.addEventListener('loadedmetadata', () => processMidpointPlayback(innerVideo), { once: true });
-            }
+            if (innerVideo.duration) { processMidpointPlayback(innerVideo); } 
+            else { innerVideo.addEventListener('loadedmetadata', () => processMidpointPlayback(innerVideo), { once: true }); }
         };
 
         windowNode.onmouseleave = () => {
@@ -397,16 +366,12 @@ function initPrecisionHoverEngine() {
         function processMidpointPlayback(v) {
             v.currentTime = v.duration / 2;
             v.play().then(() => {
-                executionTimer = setTimeout(() => {
-                    v.pause();
-                    v.currentTime = 0;
-                }, 3000);
+                executionTimer = setTimeout(() => { v.pause(); v.currentTime = 0; }, 3000);
             }).catch(() => {});
         }
     });
 }
 
-// --- Unified Navigation Framework Router ---
 function routeToCinemaView(slug, fullAssetIdentifier) {
     const assetInstance = registry.find(a => a.name === fullAssetIdentifier);
     if (!assetInstance) return;
@@ -443,27 +408,27 @@ function renderCinemaViewport(targetAsset) {
 
     const injectionPoint = document.getElementById("video-injection-nexus");
     
-    // Injected Dual Tracks: Background Track gets scaled up and heavily blurred, Foreground Track uses object-fit: contain.
+    // Completely rebuilt structural enclosure node keeping video-player fully active
     injectionPoint.innerHTML = `
-        <video class="blurred-video-backdrop" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
+        <video class="video-blur-environment-layer" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
         <video-player controls autoplay>
             <video-skin>
-                <video class="fg-player-track" id="main-fg-track" src="${targetAsset.video}" playsinline></video>
+                <video class="fg-canvas-track" id="main-fg-track" src="${targetAsset.video}" playsinline></video>
             </video-skin>
         </video-player>
     `;
 
-    // Hook to mirror main playhead tracking changes directly back into the canvas background reflection
     const foregroundTrack = document.getElementById("main-fg-track");
     const backgroundBlurTrack = document.getElementById("bg-blur-track");
 
+    // Track state orchestration handlers
     foregroundTrack.addEventListener('play', () => backgroundBlurTrack.play());
     foregroundTrack.addEventListener('pause', () => backgroundBlurTrack.pause());
     foregroundTrack.addEventListener('seeking', () => {
         backgroundBlurTrack.currentTime = foregroundTrack.currentTime;
     });
     foregroundTrack.addEventListener('timeupdate', () => {
-        if (Math.abs(backgroundBlurTrack.currentTime - foregroundTrack.currentTime) > 0.3) {
+        if (Math.abs(backgroundBlurTrack.currentTime - foregroundTrack.currentTime) > 0.2) {
             backgroundBlurTrack.currentTime = foregroundTrack.currentTime;
         }
     });
@@ -471,13 +436,11 @@ function renderCinemaViewport(targetAsset) {
     window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// --- Live Filtering Execution Node ---
 searchEngineInput.oninput = (e) => {
     const rawQuery = e.target.value.toLowerCase().trim();
     mountGrid(registry.filter(a => a.name.toLowerCase().includes(rawQuery)));
 };
 
-// --- History State Event Watcher ---
 window.onpopstate = (e) => {
     if (e.state && e.state.layer === 'cinema') {
         const correspondingRegistryObject = registry.find(a => a.name === e.state.name);
@@ -487,7 +450,6 @@ window.onpopstate = (e) => {
     }
 };
 
-// --- Initialization Entry Sequence ---
 const targetTerminatingSlug = window.location.pathname.split('/').filter(Boolean).pop();
 const validatedBootRoute = registry.find(a => encodeURIComponent(a.name.replace(/\.[^/.]+$/, "")) === targetTerminatingSlug);
 
