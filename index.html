@@ -190,25 +190,11 @@ header {
     box-shadow: 0 24px 48px rgba(0,0,0,0.5);
     position: relative;
     overflow: hidden !important;
-    /* Enforces strict clip-path bounding to kill outer bleed corner artifacts */
     clip-path: inset(0 round var(--ios-radius)) !important;
     -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
 }
 
-/* --- Blurred Background Environment Backdrop Layout --- */
-.video-blur-environment-layer {
-    position: absolute;
-    top: -10%;
-    left: -10%;
-    width: 120% !important;
-    height: 120% !important;
-    object-fit: cover !important;
-    filter: blur(24px) brightness(0.55) saturate(140%);
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* --- Custom Native Web Components Overrides --- */
+/* --- Global Shadow and Component Structural Enforcement Rules --- */
 video-player {
     position: absolute !important;
     top: 0 !important;
@@ -225,17 +211,12 @@ video-skin {
     width: 100% !important;
     height: 100% !important;
     background: transparent !important;
+    position: relative !important;
 }
 
-/* FIX: Forces massive files to cleanly conform using contain, avoiding screen-cutoff glitching */
-video-player video.fg-canvas-track {
-    width: 100% !important;
-    height: 100% !important;
+/* Base style fallback rules before scripts override shadow elements */
+video-player video {
     object-fit: contain !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    z-index: 3;
     background: transparent !important;
 }
 
@@ -408,30 +389,76 @@ function renderCinemaViewport(targetAsset) {
 
     const injectionPoint = document.getElementById("video-injection-nexus");
     
-    // Completely rebuilt structural enclosure node keeping video-player fully active
+    // Clean injection architecture setup
     injectionPoint.innerHTML = `
-        <video class="video-blur-environment-layer" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
         <video-player controls autoplay>
             <video-skin>
-                <video class="fg-canvas-track" id="main-fg-track" src="${targetAsset.video}" playsinline></video>
+                <video id="main-fg-track" src="${targetAsset.video}" playsinline></video>
             </video-skin>
         </video-player>
     `;
 
-    const foregroundTrack = document.getElementById("main-fg-track");
-    const backgroundBlurTrack = document.getElementById("bg-blur-track");
+    const playerComponent = injectionPoint.querySelector('video-player');
 
-    // Track state orchestration handlers
-    foregroundTrack.addEventListener('play', () => backgroundBlurTrack.play());
-    foregroundTrack.addEventListener('pause', () => backgroundBlurTrack.pause());
-    foregroundTrack.addEventListener('seeking', () => {
-        backgroundBlurTrack.currentTime = foregroundTrack.currentTime;
-    });
-    foregroundTrack.addEventListener('timeupdate', () => {
-        if (Math.abs(backgroundBlurTrack.currentTime - foregroundTrack.currentTime) > 0.2) {
-            backgroundBlurTrack.currentTime = foregroundTrack.currentTime;
+    // Intercept web component shadow implementation to lock fit layout and sync backdrop blur
+    function applyShadowGroundedFixes() {
+        const targetVideo = injectionPoint.querySelector('#main-fg-track');
+        if (!targetVideo) return;
+
+        // Force containment on the foreground track layout
+        targetVideo.style.setProperty('object-fit', 'contain', 'important');
+        targetVideo.style.setProperty('width', '100%', 'important');
+        targetVideo.style.setProperty('height', '100%', 'important');
+        targetVideo.style.setProperty('background', 'transparent', 'important');
+
+        // Create, position, and inject background track inside component node boundaries to match rendering timelines
+        if (!injectionPoint.querySelector('#bg-blur-track')) {
+            const backgroundBlurTrack = document.createElement('video');
+            backgroundBlurTrack.id = 'bg-blur-track';
+            backgroundBlurTrack.src = targetAsset.video;
+            backgroundBlurTrack.muted = true;
+            backgroundBlurTrack.loop = true;
+            backgroundBlurTrack.setAttribute('playsinline', '');
+            
+            // Set styles for structural background track placement explicitly
+            Object.assign(backgroundBlurTrack.style, {
+                position: 'absolute',
+                top: '-10%',
+                left: '-10%',
+                width: '120%',
+                height: '120%',
+                objectFit: 'cover',
+                filter: 'blur(24px) brightness(0.55) saturate(140%)',
+                zIndex: '0',
+                pointerEvents: 'none'
+            });
+
+            // Put background video right behind the interactive foreground video layer
+            targetVideo.parentNode.insertBefore(backgroundBlurTrack, targetVideo);
+            targetVideo.style.zIndex = '2';
+
+            // Connect track sync hooks
+            targetVideo.addEventListener('play', () => backgroundBlurTrack.play());
+            targetVideo.addEventListener('pause', () => backgroundBlurTrack.pause());
+            targetVideo.addEventListener('seeking', () => backgroundBlurTrack.currentTime = targetVideo.currentTime);
+            targetVideo.addEventListener('timeupdate', () => {
+                if (Math.abs(backgroundBlurTrack.currentTime - targetVideo.currentTime) > 0.2) {
+                    backgroundBlurTrack.currentTime = targetVideo.currentTime;
+                }
+            });
+            
+            // Sync initial state if auto-playing out of gate
+            if (!targetVideo.paused) { backgroundBlurTrack.play().catch(() => {}); }
         }
-    });
+    }
+
+    // Run layout adjustments immediately and again on metadata loading to fight delayed runtime adjustments
+    applyShadowGroundedFixes();
+    const foregroundVideo = injectionPoint.querySelector('#main-fg-track');
+    if (foregroundVideo) {
+        foregroundVideo.addEventListener('loadedmetadata', applyShadowGroundedFixes);
+        foregroundVideo.addEventListener('play', applyShadowGroundedFixes);
+    }
 
     window.scrollTo({ top: 0, behavior: 'instant' });
 }
