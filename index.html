@@ -3,25 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Vault — Liquid Glass Edition</title>
+<title>Studio Vault — Liquid Polish</title>
 
 <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video.js"></script>
 
 <style>
-/* --- Design Token Engine (iOS Comfort + Liquid Glass) --- */
+/* --- Design Token Engine (iOS Comfortable + Liquid Glass) --- */
 :root {
-    --liquid-bg: rgba(255, 255, 255, 0.03);
-    --liquid-surface: rgba(255, 255, 255, 0.05);
-    --liquid-border: rgba(255, 255, 255, 0.1);
-    --liquid-border-glow: rgba(255, 255, 255, 0.25);
+    --liquid-bg: rgba(255, 255, 255, 0.02);
+    --liquid-surface: rgba(255, 255, 255, 0.04);
+    --liquid-border: rgba(255, 255, 255, 0.08);
+    --liquid-border-hover: rgba(255, 255, 255, 0.2);
     --accent: #6366f1;
-    --accent-glow: rgba(99, 102, 241, 0.3);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --ios-curve-lg: 24px;
-    --ios-curve-md: 16px;
-    --ios-curve-sm: 10px;
-    --fluid-transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    --ios-radius: 20px;
+    --ios-radius-lg: 24px;
+    --fluid-bezier: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -33,7 +31,7 @@
 }
 
 body {
-    background: radial-gradient(circle at 50% -20%, #1a1d36 0%, #07080d 100%);
+    background: radial-gradient(circle at 50% -20%, #161930 0%, #05060a 100%);
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
@@ -44,85 +42,81 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    padding: 16px 32px;
-    background: rgba(7, 8, 13, 0.35);
-    backdrop-filter: blur(30px) saturate(140%);
-    -webkit-backdrop-filter: blur(30px) saturate(140%);
+    padding: 18px 32px;
+    background: rgba(5, 6, 10, 0.4);
+    backdrop-filter: blur(30px) saturate(160%);
+    -webkit-backdrop-filter: blur(30px) saturate(160%);
     border-bottom: 1px solid var(--liquid-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .search-wrapper {
     flex: 1;
-    max-width: 360px;
+    max-width: 340px;
 }
 
 .search-wrapper input {
     width: 100%;
     padding: 10px 20px;
     background: var(--liquid-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--liquid-border);
-    border-radius: var(--ios-curve-lg);
+    border-radius: var(--ios-radius-lg);
     color: #fff;
     font-size: 14px;
-    transition: var(--fluid-transition);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+    transition: all 0.4s var(--fluid-bezier);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.03);
 }
 
 .search-wrapper input:focus {
     outline: none;
-    border-color: var(--liquid-border-glow);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,0.05);
-    transform: translateY(-1px);
+    border-color: var(--liquid-border-hover);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .pill-badge {
     font-size: 12px;
     font-weight: 500;
     background: var(--liquid-surface);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 8px 16px;
-    border-radius: var(--ios-curve-lg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 8px 18px;
+    border-radius: var(--ios-radius-lg);
     border: 1px solid var(--liquid-border);
     color: var(--text-secondary);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
-/* --- High Presence Thumbnail Grid Layout (+10% Larger Screen Footprint) --- */
+/* --- Polished 10% Larger Card Gallery Matrix --- */
 .grid-canvas {
     max-width: 1650px;
     margin: auto;
     padding: 32px;
     display: grid;
-    gap: 20px;
-    /* Scaled from 190px to 220px to increase visual hierarchy */
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
 }
 
 .glass-deck-card {
     background: var(--liquid-bg);
-    backdrop-filter: blur(20px) saturate(120%);
-    -webkit-backdrop-filter: blur(20px) saturate(120%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--liquid-border);
-    border-radius: var(--ios-curve-lg);
+    border-radius: var(--ios-radius-lg);
     overflow: hidden;
     cursor: pointer;
-    transition: var(--fluid-transition);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.2);
+    transition: all 0.4s var(--fluid-bezier);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 20px rgba(0,0,0,0.15);
 }
 
 .glass-deck-card:hover {
-    transform: scale(1.04) translateY(-4px);
-    border-color: var(--liquid-border-glow);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 3px rgba(255,255,255,0.15), 0 20px 40px rgba(0, 0, 0, 0.4);
+    transform: scale(1.03) translateY(-2px);
+    border-color: var(--liquid-border-hover);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 20px 40px rgba(0, 0, 0, 0.35);
 }
 
 .media-window {
@@ -139,11 +133,7 @@ header {
     height: 100%;
     object-fit: cover;
     pointer-events: none;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-deck-card:hover .media-window video {
-    transform: scale(1.05);
+    transition: transform 0.5s var(--fluid-bezier);
 }
 
 .card-description-block {
@@ -169,24 +159,24 @@ header {
     font-size: 10px;
     font-weight: 500;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.04);
     padding: 3px 8px;
-    border-radius: var(--ios-curve-sm);
+    border-radius: 8px;
     color: var(--text-secondary);
 }
 
-/* --- Modern Cinematic Viewport Screen --- */
+/* --- Perfectly Sized Cinema Viewport Layout --- */
 .cinema-canvas {
     display: none;
-    max-width: 1100px;
+    max-width: 860px; /* Constrains total layout bounds cleanly */
     margin: auto;
-    padding: 48px 24px;
+    padding: 32px 20px;
     flex-direction: column;
-    gap: 24px;
-    animation: stageIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 20px;
+    animation: stageIn 0.4s var(--fluid-bezier);
 }
 
-/* Liquid UI High-Gloss Capsule Button */
+/* Liquid UI High-Gloss Action Capsule */
 .liquid-action-btn {
     align-self: flex-start;
     background: var(--liquid-surface);
@@ -194,75 +184,74 @@ header {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--liquid-border);
     color: var(--text-primary);
-    padding: 10px 24px;
-    border-radius: var(--ios-curve-lg);
+    padding: 10px 22px;
+    border-radius: var(--ios-radius-lg);
     font-size: 13px;
     font-weight: 600;
-    letter-spacing: -0.1px;
     cursor: pointer;
-    transition: var(--fluid-transition);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.15);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    transition: all 0.3s var(--fluid-bezier);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.15);
 }
 
 .liquid-action-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: var(--liquid-border-glow);
-    transform: translateY(-2px);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.2), 0 12px 24px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--liquid-border-hover);
+    transform: translateY(-1px);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.15), 0 10px 20px rgba(0, 0, 0, 0.25);
 }
 
-.liquid-action-btn:active {
-    transform: translateY(0);
-}
-
+/* --- Fixed Anti-Glitch Player Enclosure --- */
 .theater-enclosure {
-    width: 100%;
-    background: #000;
-    border-radius: var(--ios-curve-lg);
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
-    position: relative;
-}
-
-/* --- Dynamic Structural Correctives for VideoJS Node --- */
-video-player {
-    display: block;
     width: 100%;
     aspect-ratio: 16/9;
     background: #000;
+    border-radius: var(--ios-radius-lg);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    
+    /* Forces absolute hardware rendering to stop underlying black corner glitching */
+    position: relative;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
-video-skin, video-skin video {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+/* --- Precise Custom Tag Cascade Styles --- */
+video-player {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: #000 !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
 }
 
-/* Custom Controls Integration Skin Overlay Fixes */
-video::-webkit-media-controls-panel {
-    background-image: linear-gradient(transparent, rgba(0,0,0,0.85)) !important;
+video-skin {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
+}
+
+video-skin video {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    border-radius: inherit !important;
+    overflow: hidden !important;
+    background: #000 !important;
 }
 
 .cinema-header-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: -0.4px;
-    margin-top: 4px;
-}
-
-/* --- Keyframe Animation Architecture --- */
-@keyframes slideDown {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    letter-spacing: -0.3px;
 }
 
 @keyframes stageIn {
-    from { transform: scale(0.97) translateY(15px); opacity: 0; }
+    from { transform: scale(0.98) translateY(10px); opacity: 0; }
     to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
@@ -279,7 +268,7 @@ video::-webkit-media-controls-panel {
 
 <header id="global-navbar">
     <div class="search-wrapper">
-        <input type="text" id="directory-search" placeholder="Search operational files...">
+        <input type="text" id="directory-search" placeholder="Search parameters...">
     </div>
     <div class="pill-badge" id="runtime-asset-counter">0 components synchronized</div>
 </header>
@@ -289,14 +278,13 @@ video::-webkit-media-controls-panel {
 </div>
 
 <div id="cinema-wrapper-view" class="cinema-canvas">
-    <button class="liquid-action-btn" onclick="executeBackNavigation()">← System Deck</button>
+    <button class="liquid-action-btn" onclick="executeBackNavigation()">← Return to Deck</button>
     <div class="theater-enclosure" id="video-injection-nexus"></div>
     <div class="cinema-header-title" id="cinema-display-title"></div>
     <div class="metadata-flex-row" id="cinema-display-metadata"></div>
 </div>
 
 <script>
-// De-duplicated Master Registry
 const registry = [
     { "name": "ssstwitter.com_1776071102679.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "size": "4.0 MB", "resolution": "480×480" }, 
     { "name": "ssstwitter.com_1776060852922_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "size": "4.5 MB", "resolution": "480×786" }, 
@@ -329,13 +317,13 @@ const mainGrid = document.getElementById("live-grid-container");
 const searchEngineInput = document.getElementById("directory-search");
 const layoutAssetCounter = document.getElementById("runtime-asset-counter");
 
-// --- Generate UI Core Grid Array Layout ---
+// --- Generate Gallery Canvas Matrix ---
 function mountGrid(items) {
     mainGrid.innerHTML = "";
-    layoutAssetCounter.textContent = `${items.length} dynamic files active`;
+    layoutAssetCounter.textContent = `${items.length} dynamic files synchronized`;
 
     if (items.length === 0) {
-        mainGrid.innerHTML = `<div class="empty-state-notice">Zero structural files match query parameters.</div>`;
+        mainGrid.innerHTML = `<div class="empty-state-notice">Zero matching framework modules found.</div>`;
         return;
     }
 
@@ -364,7 +352,7 @@ function mountGrid(items) {
     initPrecisionHoverEngine();
 }
 
-// --- Dynamic Continuous Hover Sample Processing ---
+// --- Dynamic Continuous Hover Preview ---
 function initPrecisionHoverEngine() {
     document.querySelectorAll('.media-window').forEach(windowNode => {
         const innerVideo = windowNode.querySelector('video');
@@ -385,20 +373,18 @@ function initPrecisionHoverEngine() {
         };
 
         function processMidpointPlayback(v) {
-            const strategicMidpoint = v.duration / 2;
-            v.currentTime = strategicMidpoint;
-            
+            v.currentTime = v.duration / 2;
             v.play().then(() => {
                 executionTimer = setTimeout(() => {
                     v.pause();
                     v.currentTime = 0;
-                }, 3000); // 3000ms execution cap
+                }, 3000);
             }).catch(() => {});
         }
     });
 }
 
-// --- Dynamic Push State Routing Framework ---
+// --- Dynamic State Router Framework ---
 function routeToCinemaView(slug, fullAssetIdentifier) {
     const assetInstance = registry.find(a => a.name === fullAssetIdentifier);
     if (!assetInstance) return;
@@ -417,7 +403,7 @@ function renderSystemDeck() {
     document.getElementById("cinema-wrapper-view").style.display = "none";
     document.getElementById("global-navbar").style.display = "flex";
     document.getElementById("deck-wrapper-view").style.display = "block";
-    document.getElementById("video-injection-nexus").innerHTML = ""; // Complete garbage collection
+    document.getElementById("video-injection-nexus").innerHTML = ""; 
 }
 
 function renderCinemaViewport(targetAsset) {
@@ -433,7 +419,7 @@ function renderCinemaViewport(targetAsset) {
         <span class="ios-tag">Dimensions: ${targetAsset.resolution}</span>
     `;
 
-    // High fidelity framework configuration mapping exactly to parameters requested
+    // High fidelity pristine implementation using requested elements
     document.getElementById("video-injection-nexus").innerHTML = `
         <video-player>
           <video-skin>
@@ -444,13 +430,13 @@ function renderCinemaViewport(targetAsset) {
     window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// --- Live Evaluator Query Execution Hook ---
+// --- Live Query Evaluator ---
 searchEngineInput.oninput = (e) => {
     const rawQuery = e.target.value.toLowerCase().trim();
     mountGrid(registry.filter(a => a.name.toLowerCase().includes(rawQuery)));
 };
 
-// --- Physical Popstate Navigation Interceptor ---
+// --- Popstate Navigation Sync ---
 window.onpopstate = (e) => {
     if (e.state && e.state.layer === 'cinema') {
         const correspondingRegistryObject = registry.find(a => a.name === e.state.name);
