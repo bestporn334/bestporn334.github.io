@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Studio Vault — Liquid Polish</title>
+<title>Studio Vault — Liquid Glass Edition</title>
 
-<script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video.js"></script>
+<link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+<script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
 <style>
-/* --- Design Token Engine (iOS Comfortable + Liquid Glass) --- */
+/* --- Design Token Engine (iOS Comfortable + High Gloss Liquid Glass) --- */
 :root {
-    --liquid-bg: rgba(255, 255, 255, 0.02);
+    --liquid-bg: rgba(255, 255, 255, 0.015);
     --liquid-surface: rgba(255, 255, 255, 0.04);
-    --liquid-border: rgba(255, 255, 255, 0.08);
-    --liquid-border-hover: rgba(255, 255, 255, 0.2);
-    --accent: #6366f1;
+    --liquid-border: rgba(255, 255, 255, 0.07);
+    --liquid-border-hover: rgba(255, 255, 255, 0.22);
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
     --ios-radius: 20px;
@@ -31,7 +31,7 @@
 }
 
 body {
-    background: radial-gradient(circle at 50% -20%, #161930 0%, #05060a 100%);
+    background: radial-gradient(circle at 50% -20%, #14172e 0%, #040508 100%);
     color: var(--text-primary);
     min-height: 100vh;
     overflow-x: hidden;
@@ -42,8 +42,8 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    padding: 18px 32px;
-    background: rgba(5, 6, 10, 0.4);
+    padding: 16px 32px;
+    background: rgba(4, 5, 8, 0.45);
     backdrop-filter: blur(30px) saturate(160%);
     -webkit-backdrop-filter: blur(30px) saturate(160%);
     border-bottom: 1px solid var(--liquid-border);
@@ -54,7 +54,7 @@ header {
 
 .search-wrapper {
     flex: 1;
-    max-width: 340px;
+    max-width: 320px;
 }
 
 .search-wrapper input {
@@ -68,14 +68,14 @@ header {
     color: #fff;
     font-size: 14px;
     transition: all 0.4s var(--fluid-bezier);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.03);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.02);
 }
 
 .search-wrapper input:focus {
     outline: none;
     border-color: var(--liquid-border-hover);
-    background: rgba(255, 255, 255, 0.07);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .pill-badge {
@@ -90,14 +90,15 @@ header {
     color: var(--text-secondary);
 }
 
-/* --- Polished 10% Larger Card Gallery Matrix --- */
+/* --- High Presence Ultra-Clean 10% Scaled Thumbnail Grid --- */
 .grid-canvas {
-    max-width: 1650px;
+    max-width: 1600px;
     margin: auto;
     padding: 32px;
     display: grid;
     gap: 24px;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    /* Responsive fluid track assignment auto-recalculates clean positions on resize */
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
 }
 
 .glass-deck-card {
@@ -109,35 +110,35 @@ header {
     overflow: hidden;
     cursor: pointer;
     transition: all 0.4s var(--fluid-bezier);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 20px rgba(0,0,0,0.15);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.03), 0 4px 20px rgba(0,0,0,0.15);
 }
 
 .glass-deck-card:hover {
     transform: scale(1.03) translateY(-2px);
     border-color: var(--liquid-border-hover);
-    background: rgba(255, 255, 255, 0.06);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.1), 0 20px 40px rgba(0, 0, 0, 0.35);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.08), 0 16px 36px rgba(0, 0, 0, 0.35);
 }
 
 .media-window {
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
-    background: #020204;
+    background: #010102;
     overflow: hidden;
-    border-bottom: 1px solid var(--liquid-border);
 }
 
 .media-window video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    pointer-events: none;
+    pointer-events: none; /* Disables double elements/controls on card layer */
     transition: transform 0.5s var(--fluid-bezier);
 }
 
 .card-description-block {
-    padding: 14px 16px;
+    padding: 14px 18px 16px 18px;
+    background: linear-gradient(to top, rgba(255,255,255,0.01), transparent);
 }
 
 .asset-title {
@@ -147,7 +148,7 @@ header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .metadata-flex-row {
@@ -161,22 +162,22 @@ header {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.04);
     padding: 3px 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     color: var(--text-secondary);
 }
 
-/* --- Perfectly Sized Cinema Viewport Layout --- */
+/* --- High Precision Above-The-Fold Compact Cinema Canvas --- */
 .cinema-canvas {
     display: none;
-    max-width: 860px; /* Constrains total layout bounds cleanly */
-    margin: auto;
-    padding: 32px 20px;
+    width: 100%;
+    max-width: 720px; /* Highly optimized sizing layout constraint */
+    margin: 0 auto;
+    padding: 24px 16px;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     animation: stageIn 0.4s var(--fluid-bezier);
 }
 
-/* Liquid UI High-Gloss Action Capsule */
 .liquid-action-btn {
     align-self: flex-start;
     background: var(--liquid-surface);
@@ -184,74 +185,85 @@ header {
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--liquid-border);
     color: var(--text-primary);
-    padding: 10px 22px;
+    padding: 8px 18px;
     border-radius: var(--ios-radius-lg);
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s var(--fluid-bezier);
-    box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
 }
 
 .liquid-action-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--liquid-border-hover);
     transform: translateY(-1px);
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.15), 0 10px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* --- Fixed Anti-Glitch Player Enclosure --- */
+/* --- Pure Zero-Glitch Theater Box Wrapper --- */
 .theater-enclosure {
     width: 100%;
     aspect-ratio: 16/9;
     background: #000;
-    border-radius: var(--ios-radius-lg);
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-    
-    /* Forces absolute hardware rendering to stop underlying black corner glitching */
+    border-radius: var(--ios-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.5);
     position: relative;
-    transform: translateZ(0);
-    will-change: transform;
+    
+    /* Anti-glitch masking to eliminate corner artifacts */
+    clip-path: inset(0 round var(--ios-radius));
+    -webkit-clip-path: inset(0 round var(--ios-radius));
+    overflow: hidden;
 }
 
-/* --- Precise Custom Tag Cascade Styles --- */
-video-player {
-    display: block !important;
+/* --- Customized Liquid Glass Overrides for VideoJS Engine UI --- */
+.video-js {
     width: 100% !important;
     height: 100% !important;
-    background: #000 !important;
-    border-radius: inherit !important;
-    overflow: hidden !important;
+    background-color: #000 !important;
 }
 
-video-skin {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: inherit !important;
-    overflow: hidden !important;
-}
-
-video-skin video {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
+.video-js .vjs-tech {
     object-fit: contain !important;
-    border-radius: inherit !important;
-    overflow: hidden !important;
-    background: #000 !important;
+}
+
+.video-js .vjs-control-bar {
+    background: rgba(10, 12, 22, 0.6) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    height: 44px;
+}
+
+.video-js .vjs-big-play-button {
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 50% !important;
+    width: 60px !important;
+    height: 60px !important;
+    line-height: 58px !important;
+    margin-top: -30px !important;
+    margin-left: -30px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    transition: all 0.3s var(--fluid-bezier) !important;
+}
+
+.video-js:hover .vjs-big-play-button {
+    transform: scale(1.08);
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
 }
 
 .cinema-header-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
 }
 
 @keyframes stageIn {
-    from { transform: scale(0.98) translateY(10px); opacity: 0; }
+    from { transform: scale(0.99) translateY(8px); opacity: 0; }
     to { transform: scale(1) translateY(0); opacity: 1; }
 }
 
@@ -268,9 +280,9 @@ video-skin video {
 
 <header id="global-navbar">
     <div class="search-wrapper">
-        <input type="text" id="directory-search" placeholder="Search parameters...">
+        <input type="text" id="directory-search" placeholder="Search operational array...">
     </div>
-    <div class="pill-badge" id="runtime-asset-counter">0 components synchronized</div>
+    <div class="pill-badge" id="runtime-asset-counter">0 modules mounted</div>
 </header>
 
 <div id="deck-wrapper-view">
@@ -278,7 +290,7 @@ video-skin video {
 </div>
 
 <div id="cinema-wrapper-view" class="cinema-canvas">
-    <button class="liquid-action-btn" onclick="executeBackNavigation()">← Return to Deck</button>
+    <button class="liquid-action-btn" onclick="executeBackNavigation()">← View Deck Collection</button>
     <div class="theater-enclosure" id="video-injection-nexus"></div>
     <div class="cinema-header-title" id="cinema-display-title"></div>
     <div class="metadata-flex-row" id="cinema-display-metadata"></div>
@@ -307,7 +319,7 @@ const registry = [
     { "name": "ssstwitter.com_1776056157496.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "size": "8.5 MB", "resolution": "404×670" }, 
     { "name": "ssstwitter.com_1776055808208.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "size": "3.1 MB", "resolution": "480×850" }, 
     { "name": "ssstwitter.com_1776052339188.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "size": "5.2 MB", "resolution": "480×854" }, 
-    { "name": "ssstwitter.com_177605514465.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_177605514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa6e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "size": "4.8 MB", "resolution": "406×722" }, 
+    { "name": "ssstwitter.com_177605514465.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_177605514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa7e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "size": "4.8 MB", "resolution": "406×722" }, 
     { "name": "ssstwitter.com_1776052176689.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "size": "5.6 MB", "resolution": "480×854" }, 
     { "name": "ssstwitter.com_1776052221000.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "size": "1.9 MB", "resolution": "480×480" }, 
     { "name": "ssstwitter.com_1776052088374.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "size": "1.4 MB", "resolution": "480×852" }
@@ -316,14 +328,15 @@ const registry = [
 const mainGrid = document.getElementById("live-grid-container");
 const searchEngineInput = document.getElementById("directory-search");
 const layoutAssetCounter = document.getElementById("runtime-asset-counter");
+window.activePlayerInstance = null; // Global VideoJS reference layer
 
-// --- Generate Gallery Canvas Matrix ---
+// --- Build UI Core Array Matrix ---
 function mountGrid(items) {
     mainGrid.innerHTML = "";
-    layoutAssetCounter.textContent = `${items.length} dynamic files synchronized`;
+    layoutAssetCounter.textContent = `${items.length} files synchronized`;
 
     if (items.length === 0) {
-        mainGrid.innerHTML = `<div class="empty-state-notice">Zero matching framework modules found.</div>`;
+        mainGrid.innerHTML = `<div class="empty-state-notice">Zero operational assets match query parameters.</div>`;
         return;
     }
 
@@ -334,6 +347,7 @@ function mountGrid(items) {
         const virtualSlug = encodeURIComponent(item.name.replace(/\.[^/.]+$/, ""));
         structuralCard.onclick = () => routeToCinemaView(virtualSlug, item.name);
 
+        /* Thumbnail boxes have controls strictly disabled to avoid double player glitching */
         structuralCard.innerHTML = `
             <div class="media-window">
                 <video muted loop preload="metadata" src="${item.video}"></video>
@@ -352,7 +366,7 @@ function mountGrid(items) {
     initPrecisionHoverEngine();
 }
 
-// --- Dynamic Continuous Hover Preview ---
+// --- Dynamic Hover Previews ---
 function initPrecisionHoverEngine() {
     document.querySelectorAll('.media-window').forEach(windowNode => {
         const innerVideo = windowNode.querySelector('video');
@@ -384,7 +398,7 @@ function initPrecisionHoverEngine() {
     });
 }
 
-// --- Dynamic State Router Framework ---
+// --- Push-State Structural Routing Framework ---
 function routeToCinemaView(slug, fullAssetIdentifier) {
     const assetInstance = registry.find(a => a.name === fullAssetIdentifier);
     if (!assetInstance) return;
@@ -400,6 +414,12 @@ function executeBackNavigation() {
 }
 
 function renderSystemDeck() {
+    // Cleanly destroy active instances to prevent memory leaks or audio playback bugs
+    if (window.activePlayerInstance) {
+        window.activePlayerInstance.dispose();
+        window.activePlayerInstance = null;
+    }
+
     document.getElementById("cinema-wrapper-view").style.display = "none";
     document.getElementById("global-navbar").style.display = "flex";
     document.getElementById("deck-wrapper-view").style.display = "block";
@@ -407,6 +427,11 @@ function renderSystemDeck() {
 }
 
 function renderCinemaViewport(targetAsset) {
+    if (window.activePlayerInstance) {
+        window.activePlayerInstance.dispose();
+        window.activePlayerInstance = null;
+    }
+
     document.getElementById("deck-wrapper-view").style.display = "none";
     document.getElementById("global-navbar").style.display = "none";
     
@@ -415,28 +440,37 @@ function renderCinemaViewport(targetAsset) {
 
     document.getElementById("cinema-display-title").textContent = targetAsset.name;
     document.getElementById("cinema-display-metadata").innerHTML = `
-        <span class="ios-tag">Size Weight: ${targetAsset.size}</span>
-        <span class="ios-tag">Dimensions: ${targetAsset.resolution}</span>
+        <span class="ios-tag">Weight: ${targetAsset.size}</span>
+        <span class="ios-tag">Resolution: ${targetAsset.resolution}</span>
     `;
 
-    // High fidelity pristine implementation using requested elements
-    document.getElementById("video-injection-nexus").innerHTML = `
-        <video-player>
-          <video-skin>
-            <video src="${targetAsset.video}" playsinline controls autoplay></video>
-          </video-skin>
-        </video-player>
+    // Inject native layout hook tailored exactly for VideoJS configuration
+    const injectionPoint = document.getElementById("video-injection-nexus");
+    injectionPoint.innerHTML = `
+        <video id="studio-core-player" class="video-js vjs-default-skin vjs-big-play-centered" controls autoplay playsinline>
+            <source src="${targetAsset.video}" type="video/mp4">
+        </video>
     `;
+
+    // Initialize official VideoJS module with explicit fluid rules
+    window.activePlayerInstance = videojs("studio-core-player", {
+        responsive: true,
+        fluid: false,
+        controlBar: {
+            skipButtons: { forward: 10, backward: 10 }
+        }
+    });
+
     window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// --- Live Query Evaluator ---
+// --- Live Evaluator Query Execution Hook ---
 searchEngineInput.oninput = (e) => {
     const rawQuery = e.target.value.toLowerCase().trim();
     mountGrid(registry.filter(a => a.name.toLowerCase().includes(rawQuery)));
 };
 
-// --- Popstate Navigation Sync ---
+// --- Popstate Back-Navigation Watcher ---
 window.onpopstate = (e) => {
     if (e.state && e.state.layer === 'cinema') {
         const correspondingRegistryObject = registry.find(a => a.name === e.state.name);
@@ -446,7 +480,7 @@ window.onpopstate = (e) => {
     }
 };
 
-// --- Initial Runtime Verification Engine ---
+// --- Runtime Boot Vector Verification ---
 const targetTerminatingSlug = window.location.pathname.split('/').filter(Boolean).pop();
 const validatedBootRoute = registry.find(a => encodeURIComponent(a.name.replace(/\.[^/.]+$/, "")) === targetTerminatingSlug);
 
