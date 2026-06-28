@@ -92,7 +92,6 @@ header {
     transition: opacity 0.3s ease;
 }
 
-/* Hides the "synchronized" pill layout automatically when squeezed thin */
 @media (max-width: 600px) {
     .pill-badge {
         display: none !important;
@@ -177,7 +176,7 @@ header {
 .cinema-canvas {
     display: none;
     width: 100%;
-    max-width: 680px; /* Locked constraint limits so you don't scroll down the page */
+    max-width: 680px; 
     margin: 0 auto;
     padding: 20px 16px;
     flex-direction: column;
@@ -216,37 +215,53 @@ header {
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 24px 48px rgba(0,0,0,0.5);
     position: relative;
-    
-    /* Hardware Accelerated clipping masks block visual bleeding & corner glitches completely */
     overflow: hidden !important;
     clip-path: inset(0 round var(--ios-radius)) !important;
     -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
     -webkit-mask-image: -webkit-radial-gradient(white, black); 
 }
 
-/* --- Web Component Sizing Fixes (Stops zoom-in resolution truncation) --- */
+/* --- Dynamic Backdrop Layer Styling --- */
+.blurred-video-backdrop {
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120% !important;
+    height: 120% !important;
+    object-fit: cover !important;
+    filter: blur(25px) brightness(0.6);
+    transform: scale(1.1);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* --- Web Component Architecture --- */
 video-player {
     width: 100% !important;
     height: 100% !important;
     display: block !important;
     border-radius: var(--ios-radius) !important;
     overflow: hidden !important;
+    position: relative;
+    z-index: 2;
 }
 
 video-skin {
     border-radius: var(--ios-radius) !important;
     overflow: hidden !important;
+    background: transparent !important; /* Allow blurred background to reflect from below */
 }
 
-/* FIX: Forces massive source file videos to scale cleanly inside the small container box */
-video-player video {
+/* Sharp foreground layer fitting resolution bounds dynamically */
+video-player video.fg-player-track {
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important; 
     border-radius: var(--ios-radius) !important;
+    position: relative;
+    z-index: 3;
 }
 
-/* Strip native shadow controls layer immediately to avoid double overlapping instances */
 video-player video::-webkit-media-controls {
     display: none !important;
 }
@@ -426,15 +441,32 @@ function renderCinemaViewport(targetAsset) {
         <span class="ios-tag">Resolution: ${targetAsset.resolution}</span>
     `;
 
-    // Mounted: Authenticated structural web component block mapping configuration rules
     const injectionPoint = document.getElementById("video-injection-nexus");
+    
+    // Injected Dual Tracks: Background Track gets scaled up and heavily blurred, Foreground Track uses object-fit: contain.
     injectionPoint.innerHTML = `
+        <video class="blurred-video-backdrop" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
         <video-player controls autoplay>
             <video-skin>
-                <video src="${targetAsset.video}" playsinline></video>
+                <video class="fg-player-track" id="main-fg-track" src="${targetAsset.video}" playsinline></video>
             </video-skin>
         </video-player>
     `;
+
+    // Hook to mirror main playhead tracking changes directly back into the canvas background reflection
+    const foregroundTrack = document.getElementById("main-fg-track");
+    const backgroundBlurTrack = document.getElementById("bg-blur-track");
+
+    foregroundTrack.addEventListener('play', () => backgroundBlurTrack.play());
+    foregroundTrack.addEventListener('pause', () => backgroundBlurTrack.pause());
+    foregroundTrack.addEventListener('seeking', () => {
+        backgroundBlurTrack.currentTime = foregroundTrack.currentTime;
+    });
+    foregroundTrack.addEventListener('timeupdate', () => {
+        if (Math.abs(backgroundBlurTrack.currentTime - foregroundTrack.currentTime) > 0.3) {
+            backgroundBlurTrack.currentTime = foregroundTrack.currentTime;
+        }
+    });
 
     window.scrollTo({ top: 0, behavior: 'instant' });
 }
