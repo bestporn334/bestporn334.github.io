@@ -3,478 +3,487 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery Studio</title>
 
-<title>Video Gallery</title>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video-ui.css">
 <style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+    font-family:Inter,system-ui,-apple-system,sans-serif;
 }
 
 :root{
-    --orange:#ff8c42;
-    --orange2:#ffb76b;
-    --glass:rgba(255,255,255,.09);
-    --glass2:rgba(255,255,255,.04);
-    --border:rgba(255,255,255,.16);
+    --accent:#d4af37; /* Elegant muted gold/tan */
+    --accent-glow:rgba(212,175,55,0.15);
+    --bg-main:#0b0b0c;
+    --bg-card:rgba(255,255,255,0.03);
+    --border:rgba(255,255,255,0.08);
+    --text-muted:#8a8a93;
 }
 
 body{
-    background:
-        radial-gradient(circle at top,#3d1d0b 0%,#121212 40%),
-        linear-gradient(#0e0e0e,#080808);
-    color:white;
+    background-color:var(--bg-main);
+    color:#f4f4f6;
     min-height:100vh;
     overflow-x:hidden;
-}
-
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    backdrop-filter:blur(60px);
-    pointer-events:none;
 }
 
 header{
     position:sticky;
     top:0;
     z-index:50;
-
-    padding:22px;
-
-    backdrop-filter:blur(40px);
-    background:rgba(20,20,20,.45);
-    border-bottom:1px solid rgba(255,255,255,.08);
+    padding:16px 24px;
+    backdrop-filter:blur(20px);
+    background:rgba(11,11,12,0.8);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
 }
 
-h1{
-    font-size:34px;
-    font-weight:700;
-    color:var(--orange);
-    letter-spacing:.3px;
+.search-container{
+    flex:1;
+    max-width:480px;
 }
 
-.subtitle{
-    opacity:.7;
-    margin-top:4px;
-}
-
-.search{
-    margin-top:20px;
-}
-
-.search input{
+.search-container input{
     width:100%;
-    padding:15px 20px;
-
-    border:none;
+    padding:10px 16px;
+    border:1px solid var(--border);
     outline:none;
-
-    border-radius:18px;
-
+    border-radius:12px;
     color:white;
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(30px);
-
-    font-size:15px;
+    background:rgba(255,255,255,0.05);
+    font-size:14px;
+    transition:0.2s;
 }
 
+.search-container input:focus{
+    border-color:var(--accent);
+}
+
+.video-count{
+    font-size:13px;
+    color:var(--text-muted);
+}
+
+/* Optimized Smaller Grid Layout */
 .grid{
-
-    max-width:1600px;
+    max-width:1400px;
     margin:auto;
-
     padding:24px;
-
     display:grid;
-    gap:22px;
-
-    grid-template-columns:
-        repeat(auto-fill,minmax(320px,1fr));
+    gap:18px;
+    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
 }
 
 .card{
-
     overflow:hidden;
-
-    border-radius:28px;
-
-    background:linear-gradient(
-        180deg,
-        rgba(255,255,255,.10),
-        rgba(255,255,255,.04)
-    );
-
-    border:1px solid rgba(255,255,255,.08);
-
-    backdrop-filter:blur(40px);
-
-    transition:.35s;
+    border-radius:16px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    transition:transform 0.25s ease,border-color 0.25s ease;
+    cursor:pointer;
 }
 
 .card:hover{
-
-    transform:
-        translateY(-7px)
-        scale(1.015);
-
-    border-color:rgba(255,170,80,.55);
-
-    box-shadow:
-        0 20px 60px rgba(255,120,30,.22);
+    transform:translateY(-4px);
+    border-color:var(--accent);
 }
 
 .preview{
-
     position:relative;
-    overflow:hidden;
-}
-
-.preview video{
-
     width:100%;
-    display:block;
-    aspect-ratio:9/16;
-    object-fit:cover;
-
-    background:black;
+    aspect-ratio:16/9; /* Standard widescreen cards */
+    overflow:hidden;
+    background:#000;
 }
 
-.play{
-
-    position:absolute;
-
-    inset:0;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:70px;
-
-    color:white;
-
-    text-shadow:0 5px 30px black;
-
-    opacity:.9;
-
-    pointer-events:none;
+/* Handle portrait aspect ratios gracefully inside the cards */
+.preview video{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
 }
 
 .info{
-    padding:18px;
+    padding:12px;
 }
 
 .name{
-
-    color:var(--orange);
-
-    font-weight:700;
-
-    margin-bottom:10px;
-
-    font-size:16px;
-
-    word-break:break-word;
+    font-weight:500;
+    font-size:14px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin-bottom:8px;
 }
 
 .meta{
-
     display:flex;
-
     flex-wrap:wrap;
-
-    gap:8px;
+    gap:6px;
 }
 
 .tag{
-
-    padding:7px 12px;
-
-    border-radius:999px;
-
-    background:rgba(255,255,255,.07);
-
-    font-size:12px;
-
-    color:#ddd;
+    padding:4px 8px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.05);
+    font-size:11px;
+    color:var(--text-muted);
 }
 
-.buttons{
-
-    display:flex;
-    gap:10px;
-
-    margin-top:18px;
-}
-
-button{
-
-    flex:1;
-
-    border:none;
-
-    cursor:pointer;
-
-    padding:12px;
-
-    border-radius:16px;
-
-    color:white;
-
-    font-weight:600;
-
-    transition:.25s;
-
-    backdrop-filter:blur(20px);
-}
-
-.watch{
-
-    background:linear-gradient(
-        135deg,
-        var(--orange),
-        #ff6f3c
-    );
-}
-
-.download{
-
-    background:rgba(255,255,255,.08);
-}
-
-button:hover{
-
-    transform:translateY(-2px);
-}
-
-.modal{
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.72);
-
+/* Dedicated View Layout */
+.single-view-container{
     display:none;
-
-    align-items:center;
-    justify-content:center;
-
-    z-index:999;
+    max-width:1100px;
+    margin:auto;
+    padding:40px 24px;
+    flex-direction:column;
+    gap:20px;
 }
 
-.modal video{
-
-    width:min(90vw,1000px);
-
-    max-height:90vh;
-
-    border-radius:24px;
-
-    background:black;
-}
-
-.close{
-
-    position:absolute;
-
-    top:30px;
-    right:30px;
-
-    width:55px;
-    height:55px;
-
-    border-radius:50%;
-
-    background:rgba(255,255,255,.12);
-
-    display:grid;
-    place-items:center;
-
-    font-size:28px;
-
+.back-btn{
+    align-self:flex-start;
+    background:rgba(255,255,255,0.06);
+    border:1px solid var(--border);
+    color:white;
+    padding:8px 16px;
+    border-radius:10px;
     cursor:pointer;
+    font-size:14px;
+    font-weight:500;
+    transition:0.2s;
+}
+
+.back-btn:hover{
+    background:rgba(255,255,255,0.1);
+    border-color:var(--text-muted);
+}
+
+.player-wrapper{
+    width:100%;
+    background:#000;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* VideoJS Component Custom Fit Overrides */
+video-player {
+    display:block;
+    width:100%;
+    height:100%;
+}
+media-container {
+    aspect-ratio:16/9;
+}
+
+.single-info{
+    margin-top:10px;
+}
+.single-title{
+    font-size:22px;
+    font-weight:600;
+    color:#fff;
+    margin-bottom:12px;
 }
 
 .empty{
     text-align:center;
-    opacity:.5;
+    color:var(--text-muted);
     padding:80px;
+    grid-column:1/-1;
 }
 
 ::-webkit-scrollbar{
-    width:10px;
+    width:8px;
 }
-
 ::-webkit-scrollbar-thumb{
-    background:#ff8c42;
+    background:rgba(255,255,255,0.15);
     border-radius:999px;
 }
+::-webkit-scrollbar-thumb:hover{
+    background:var(--accent);
+}
 </style>
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video-ui.js"></script>
 </head>
 <body>
 
-<header>
-
-<h1>Video Gallery</h1>
-<div class="subtitle" id="count"></div>
-
-<div class="search">
-<input
-id="search"
-placeholder="Search videos..."
->
-</div>
-
+<header id="main-header">
+    <div class="search-container">
+        <input id="search" placeholder="Search studio records...">
+    </div>
+    <div class="video-count" id="count"></div>
 </header>
 
-<div id="grid" class="grid"></div>
+<div id="grid-view">
+    <div id="grid" class="grid"></div>
+</div>
 
-<div id="modal" class="modal">
-
-<div class="close" onclick="closePlayer()">✕</div>
-
-<video
-id="player"
-controls
-autoplay
-playsinline
-></video>
-
+<div id="single-view" class="single-view-container">
+    <button class="back-btn" onclick="navigateToGallery()">← Back to Gallery</button>
+    <div class="player-wrapper" id="player-target">
+        </div>
+    <div class="single-info">
+        <h2 class="single-title" id="single-video-title"></h2>
+        <div class="meta" id="single-video-meta"></div>
+    </div>
 </div>
 
 <script>
+// Filtered Unique Database (ssstwitter.com_1776052339188.mov duplicate safely eliminated)
+const videos = [ 
+    { "name": "ssstwitter.com_1776071102679.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "size": "4.0 MB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776060852922_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "size": "4.5 MB", "width": 480, "height": 786, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776062055583.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140176409591879/ssstwitter.com_1776062055583.mov?ex=6a416be7&is=6a401a67&hm=c4b599ac9ee3d68c695aba9fe6c7e67395e1e653e77eeea6794354319d27d616&", "size": "5.1 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776061492997.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177114366072/ssstwitter.com_1776061492997.mov?ex=6a416be7&is=6a401a67&hm=25c33b57695c1f56626be0c6fca3425fbaee084b3bb21fe7912a87d799704465&", "size": "2.9 MB", "width": 360, "height": 640, "author": "jubilant_star_90157" }, 
+    { "name": "copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177990713464/copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov?ex=6a416be7&is=6a401a67&hm=433c4fbcd39fbdd9cdef083f3263d055cee9bcfa4db325df9b1db666d91fb061&", "size": "7.1 MB", "width": 886, "height": 410, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776052898083_copy_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116349944303688/ssstwitter.com_1776052898083_copy_copy_copy.mov?ex=6a4155b6&is=6a400436&hm=4a844934748609f34de3d78ba5328a332264c0df15a3c3e1e325bee45c09e491&", "size": "9.2 MB", "width": 854, "height": 480, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776055786699_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116310450864190/ssstwitter.com_1776055786699_copy.mov?ex=6a4155ad&is=6a40042d&hm=49af48762fc435f33ed82ecaaf0b5ce7c1ab2dda28b880cf77ba78d4c8d74565&", "size": "4.4 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776055360513_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311012643017/ssstwitter.com_1776055360513_copy.mov?ex=6a4155ad&is=6a40042d&hm=5963602123fe7e18c137f76468d6b327d4e2dba7fd6e8c82d86ba7dbbef56f0f&", "size": "1.6 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776056128981_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311423680594/ssstwitter.com_1776056128981_copy.mov?ex=6a4155ad&is=6a40042d&hm=f38825980f913bdb5c13648e04bcb7aa6d2579c3bb6d5bb112d55c66106ba0e2&", "size": "5.4 MB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776055571926_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116312225059007/ssstwitter.com_1776055571926_copy.mov?ex=6a4155ad&is=6a40042d&hm=9a86fa0f47ca28132aaad76ad0e127ddf905ceea2f44dd9064f902a229245188&", "size": "9.5 MB", "width": 480, "height": 800, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776054786398_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116313692930119/ssstwitter.com_1776054786398_copy.mov?ex=6a4155ad&is=6a40042d&hm=199272078564337012f24e7a307d1e45bf37d25d000ffcc406c544b2c07cb2d0&", "size": "8.1 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776054502053_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116314582126682/ssstwitter.com_1776054502053_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=5b8c5d6005f189097179c94f8409188a88968f081f0313743cd5148754fc8606&", "size": "6.1 MB", "width": 406, "height": 720, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776054931006_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116315286638724/ssstwitter.com_1776054931006_copy.mov?ex=6a4155ae&is=6a40042e&hm=ef0efbc012b3928fb846ac851e1530b844d6fc7ec4649e83610b37a2f517682e&", "size": "6.3 MB", "width": 480, "height": 828, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776054471537_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316142276688/ssstwitter.com_1776054471537_copy.mov?ex=6a4155ae&is=6a40042e&hm=a4d88695a68cc4667ee60ca55992c2db6bc4a69edad2b7b575439aa1dc1da525&", "size": "2.3 MB", "width": 480, "height": 802, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776056043316_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316918485203/ssstwitter.com_1776056043316_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=1139d60c189f0343a36ab6f0afd12e05f105c5bcbded3bae5ee9cc5c6d3d0094&", "size": "7.2 MB", "width": 480, "height": 770, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776055838120_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116317748953218/ssstwitter.com_1776055838120_copy.mov?ex=6a4155ae&is=6a40042e&hm=82081f3c59a1e6797fc1a1551e331a9878154c658735e078548d3fd8fe9f264c&", "size": "790.7 KB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776052489565_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116054606446693/ssstwitter.com_1776052489565_copy.mov?ex=6a415570&is=6a4003f0&hm=30882df7a529ba2a93d980d864e8b3512af1509429dfda9975a1cccf6304dd9e&", "size": "5.2 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776055891755.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055231529002/ssstwitter.com_1776055891755.mov?ex=6a415570&is=6a4003f0&hm=168c4a4408b96eedb5be4868b1118af4319396b64de3928ba2c0bb89b65cb708&", "size": "2.1 MB", "width": 480, "height": 864, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776056157496.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "size": "8.5 MB", "width": 404, "height": 670, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776055808208.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "size": "3.1 MB", "width": 480, "height": 850, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776052339188.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "size": "5.2 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776055514465.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_1776055514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa6e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "size": "4.8 MB", "width": 406, "height": 722, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776052176689.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "size": "5.6 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776052221000.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "size": "1.9 MB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
+    { "name": "ssstwitter.com_1776052088374.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "size": "1.4 MB", "width": 480, "height": 852, "author": "jubilant_star_90157" }
+];
 
-/* Replace this with your JSON */
+const grid = document.getElementById("grid");
+const search = document.getElementById("search");
+const count = document.getElementById("count");
 
-const videos = [ { "name": "ssstwitter.com_1776071102679.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "size": "4.0 MB", "width": 480, "height": 480, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T09:18:13.389000+00:00", "messageId": "1493178487727460533", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776060852922_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "size": "4.5 MB", "width": 480, "height": 786, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T06:45:59.797000+00:00", "messageId": "1493140178666262578", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776062055583.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140176409591879/ssstwitter.com_1776062055583.mov?ex=6a416be7&is=6a401a67&hm=c4b599ac9ee3d68c695aba9fe6c7e67395e1e653e77eeea6794354319d27d616&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493140176409591879/ssstwitter.com_1776062055583.mov?ex=6a416be7&is=6a401a67&hm=c4b599ac9ee3d68c695aba9fe6c7e67395e1e653e77eeea6794354319d27d616&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493140176409591879/ssstwitter.com_1776062055583.mov?ex=6a416be7&is=6a401a67&hm=c4b599ac9ee3d68c695aba9fe6c7e67395e1e653e77eeea6794354319d27d616&", "size": "5.1 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T06:45:59.797000+00:00", "messageId": "1493140178666262578", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776061492997.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177114366072/ssstwitter.com_1776061492997.mov?ex=6a416be7&is=6a401a67&hm=25c33b57695c1f56626be0c6fca3425fbaee084b3bb21fe7912a87d799704465&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493140177114366072/ssstwitter.com_1776061492997.mov?ex=6a416be7&is=6a401a67&hm=25c33b57695c1f56626be0c6fca3425fbaee084b3bb21fe7912a87d799704465&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493140177114366072/ssstwitter.com_1776061492997.mov?ex=6a416be7&is=6a401a67&hm=25c33b57695c1f56626be0c6fca3425fbaee084b3bb21fe7912a87d799704465&", "size": "2.9 MB", "width": 360, "height": 640, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T06:45:59.797000+00:00", "messageId": "1493140178666262578", "channelId": "1493099527111049228" }, { "name": "copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177990713464/copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov?ex=6a416be7&is=6a401a67&hm=433c4fbcd39fbdd9cdef083f3263d055cee9bcfa4db325df9b1db666d91fb061&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493140177990713464/copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov?ex=6a416be7&is=6a401a67&hm=433c4fbcd39fbdd9cdef083f3263d055cee9bcfa4db325df9b1db666d91fb061&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493140177990713464/copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov?ex=6a416be7&is=6a401a67&hm=433c4fbcd39fbdd9cdef083f3263d055cee9bcfa4db325df9b1db666d91fb061&", "size": "7.1 MB", "width": 886, "height": 410, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T06:45:59.797000+00:00", "messageId": "1493140178666262578", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776052898083_copy_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116349944303688/ssstwitter.com_1776052898083_copy_copy_copy.mov?ex=6a4155b6&is=6a400436&hm=4a844934748609f34de3d78ba5328a332264c0df15a3c3e1e325bee45c09e491&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116349944303688/ssstwitter.com_1776052898083_copy_copy_copy.mov?ex=6a4155b6&is=6a400436&hm=4a844934748609f34de3d78ba5328a332264c0df15a3c3e1e325bee45c09e491&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116349944303688/ssstwitter.com_1776052898083_copy_copy_copy.mov?ex=6a4155b6&is=6a400436&hm=4a844934748609f34de3d78ba5328a332264c0df15a3c3e1e325bee45c09e491&", "size": "9.2 MB", "width": 854, "height": 480, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:18.717000+00:00", "messageId": "1493116350489694250", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776055786699_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116310450864190/ssstwitter.com_1776055786699_copy.mov?ex=6a4155ad&is=6a40042d&hm=49af48762fc435f33ed82ecaaf0b5ce7c1ab2dda28b880cf77ba78d4c8d74565&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116310450864190/ssstwitter.com_1776055786699_copy.mov?ex=6a4155ad&is=6a40042d&hm=49af48762fc435f33ed82ecaaf0b5ce7c1ab2dda28b880cf77ba78d4c8d74565&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116310450864190/ssstwitter.com_1776055786699_copy.mov?ex=6a4155ad&is=6a40042d&hm=49af48762fc435f33ed82ecaaf0b5ce7c1ab2dda28b880cf77ba78d4c8d74565&", "size": "4.4 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776055360513_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311012643017/ssstwitter.com_1776055360513_copy.mov?ex=6a4155ad&is=6a40042d&hm=5963602123fe7e18c137f76468d6b327d4e2dba7fd6e8c82d86ba7dbbef56f0f&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116311012643017/ssstwitter.com_1776055360513_copy.mov?ex=6a4155ad&is=6a40042d&hm=5963602123fe7e18c137f76468d6b327d4e2dba7fd6e8c82d86ba7dbbef56f0f&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116311012643017/ssstwitter.com_1776055360513_copy.mov?ex=6a4155ad&is=6a40042d&hm=5963602123fe7e18c137f76468d6b327d4e2dba7fd6e8c82d86ba7dbbef56f0f&", "size": "1.6 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776056128981_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311423680594/ssstwitter.com_1776056128981_copy.mov?ex=6a4155ad&is=6a40042d&hm=f38825980f913bdb5c13648e04bcb7aa6d2579c3bb6d5bb112d55c66106ba0e2&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116311423680594/ssstwitter.com_1776056128981_copy.mov?ex=6a4155ad&is=6a40042d&hm=f38825980f913bdb5c13648e04bcb7aa6d2579c3bb6d5bb112d55c66106ba0e2&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116311423680594/ssstwitter.com_1776056128981_copy.mov?ex=6a4155ad&is=6a40042d&hm=f38825980f913bdb5c13648e04bcb7aa6d2579c3bb6d5bb112d55c66106ba0e2&", "size": "5.4 MB", "width": 480, "height": 480, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776055571926_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116312225059007/ssstwitter.com_1776055571926_copy.mov?ex=6a4155ad&is=6a40042d&hm=9a86fa0f47ca28132aaad76ad0e127ddf905ceea2f44dd9064f902a229245188&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116312225059007/ssstwitter.com_1776055571926_copy.mov?ex=6a4155ad&is=6a40042d&hm=9a86fa0f47ca28132aaad76ad0e127ddf905ceea2f44dd9064f902a229245188&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116312225059007/ssstwitter.com_1776055571926_copy.mov?ex=6a4155ad&is=6a40042d&hm=9a86fa0f47ca28132aaad76ad0e127ddf905ceea2f44dd9064f902a229245188&", "size": "9.5 MB", "width": 480, "height": 800, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776054786398_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116313692930119/ssstwitter.com_1776054786398_copy.mov?ex=6a4155ad&is=6a40042d&hm=199272078564337012f24e7a307d1e45bf37d25d000ffcc406c544b2c07cb2d0&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116313692930119/ssstwitter.com_1776054786398_copy.mov?ex=6a4155ad&is=6a40042d&hm=199272078564337012f24e7a307d1e45bf37d25d000ffcc406c544b2c07cb2d0&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116313692930119/ssstwitter.com_1776054786398_copy.mov?ex=6a4155ad&is=6a40042d&hm=199272078564337012f24e7a307d1e45bf37d25d000ffcc406c544b2c07cb2d0&", "size": "8.1 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776054502053_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116314582126682/ssstwitter.com_1776054502053_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=5b8c5d6005f189097179c94f8409188a88968f081f0313743cd5148754fc8606&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116314582126682/ssstwitter.com_1776054502053_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=5b8c5d6005f189097179c94f8409188a88968f081f0313743cd5148754fc8606&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116314582126682/ssstwitter.com_1776054502053_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=5b8c5d6005f189097179c94f8409188a88968f081f0313743cd5148754fc8606&", "size": "6.1 MB", "width": 406, "height": 720, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776054931006_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116315286638724/ssstwitter.com_1776054931006_copy.mov?ex=6a4155ae&is=6a40042e&hm=ef0efbc012b3928fb846ac851e1530b844d6fc7ec4649e83610b37a2f517682e&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116315286638724/ssstwitter.com_1776054931006_copy.mov?ex=6a4155ae&is=6a40042e&hm=ef0efbc012b3928fb846ac851e1530b844d6fc7ec4649e83610b37a2f517682e&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116315286638724/ssstwitter.com_1776054931006_copy.mov?ex=6a4155ae&is=6a40042e&hm=ef0efbc012b3928fb846ac851e1530b844d6fc7ec4649e83610b37a2f517682e&", "size": "6.3 MB", "width": 480, "height": 828, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776054471537_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316142276688/ssstwitter.com_1776054471537_copy.mov?ex=6a4155ae&is=6a40042e&hm=a4d88695a68cc4667ee60ca55992c2db6bc4a69edad2b7b575439aa1dc1da525&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116316142276688/ssstwitter.com_1776054471537_copy.mov?ex=6a4155ae&is=6a40042e&hm=a4d88695a68cc4667ee60ca55992c2db6bc4a69edad2b7b575439aa1dc1da525&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116316142276688/ssstwitter.com_1776054471537_copy.mov?ex=6a4155ae&is=6a40042e&hm=a4d88695a68cc4667ee60ca55992c2db6bc4a69edad2b7b575439aa1dc1da525&", "size": "2.3 MB", "width": 480, "height": 802, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776056043316_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316918485203/ssstwitter.com_1776056043316_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=1139d60c189f0343a36ab6f0afd12e05f105c5bcbded3bae5ee9cc5c6d3d0094&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116316918485203/ssstwitter.com_1776056043316_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=1139d60c189f0343a36ab6f0afd12e05f105c5bcbded3bae5ee9cc5c6d3d0094&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116316918485203/ssstwitter.com_1776056043316_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=1139d60c189f0343a36ab6f0afd12e05f105c5bcbded3bae5ee9cc5c6d3d0094&", "size": "7.2 MB", "width": 480, "height": 770, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776055838120_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116317748953218/ssstwitter.com_1776055838120_copy.mov?ex=6a4155ae&is=6a40042e&hm=82081f3c59a1e6797fc1a1551e331a9878154c658735e078548d3fd8fe9f264c&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116317748953218/ssstwitter.com_1776055838120_copy.mov?ex=6a4155ae&is=6a40042e&hm=82081f3c59a1e6797fc1a1551e331a9878154c658735e078548d3fd8fe9f264c&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116317748953218/ssstwitter.com_1776055838120_copy.mov?ex=6a4155ae&is=6a40042e&hm=82081f3c59a1e6797fc1a1551e331a9878154c658735e078548d3fd8fe9f264c&", "size": "790.7 KB", "width": 480, "height": 480, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:11:10.987000+00:00", "messageId": "1493116318067724348", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776052489565_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116054606446693/ssstwitter.com_1776052489565_copy.mov?ex=6a415570&is=6a4003f0&hm=30882df7a529ba2a93d980d864e8b3512af1509429dfda9975a1cccf6304dd9e&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116054606446693/ssstwitter.com_1776052489565_copy.mov?ex=6a415570&is=6a4003f0&hm=30882df7a529ba2a93d980d864e8b3512af1509429dfda9975a1cccf6304dd9e&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116054606446693/ssstwitter.com_1776052489565_copy.mov?ex=6a415570&is=6a4003f0&hm=30882df7a529ba2a93d980d864e8b3512af1509429dfda9975a1cccf6304dd9e&", "size": "5.2 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:10:08.661000+00:00", "messageId": "1493116056653266984", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776055891755.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055231529002/ssstwitter.com_1776055891755.mov?ex=6a415570&is=6a4003f0&hm=168c4a4408b96eedb5be4868b1118af4319396b64de3928ba2c0bb89b65cb708&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116055231529002/ssstwitter.com_1776055891755.mov?ex=6a415570&is=6a4003f0&hm=168c4a4408b96eedb5be4868b1118af4319396b64de3928ba2c0bb89b65cb708&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116055231529002/ssstwitter.com_1776055891755.mov?ex=6a415570&is=6a4003f0&hm=168c4a4408b96eedb5be4868b1118af4319396b64de3928ba2c0bb89b65cb708&", "size": "2.1 MB", "width": 480, "height": 864, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:10:08.661000+00:00", "messageId": "1493116056653266984", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776056157496.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "size": "8.5 MB", "width": 404, "height": 670, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:10:08.661000+00:00", "messageId": "1493116056653266984", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776055808208.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "size": "3.1 MB", "width": 480, "height": 850, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:09:48.561000+00:00", "messageId": "1493115972347756654", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776052339188.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "size": "5.2 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:09:42.006000+00:00", "messageId": "1493115944854093886", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776055514465.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_1776055514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa6e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_1776055514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa6e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_1776055514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa6e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "size": "4.8 MB", "width": 406, "height": 722, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:09:42.006000+00:00", "messageId": "1493115944854093886", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776052176689.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "size": "5.6 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:08:51.477000+00:00", "messageId": "1493115732920369225", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776052339188.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115732152680601/ssstwitter.com_1776052339188.mov?ex=6a415523&is=6a4003a3&hm=6aa260d2d559c31bcc3bf96b719f1fed9af21aa3afaef5207bc678085c2f4c69&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493115732152680601/ssstwitter.com_1776052339188.mov?ex=6a415523&is=6a4003a3&hm=6aa260d2d559c31bcc3bf96b719f1fed9af21aa3afaef5207bc678085c2f4c69&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493115732152680601/ssstwitter.com_1776052339188.mov?ex=6a415523&is=6a4003a3&hm=6aa260d2d559c31bcc3bf96b719f1fed9af21aa3afaef5207bc678085c2f4c69&", "size": "5.2 MB", "width": 480, "height": 854, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:08:51.477000+00:00", "messageId": "1493115732920369225", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776052221000.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "size": "1.9 MB", "width": 480, "height": 480, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T05:08:51.477000+00:00", "messageId": "1493115732920369225", "channelId": "1493099527111049228" }, { "name": "ssstwitter.com_1776052088374.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "proxy": "https://media.discordapp.net/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "thumbnail": "https://media.discordapp.net/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "size": "1.4 MB", "width": 480, "height": 852, "duration": null, "author": "jubilant_star_90157", "date": "2026-04-13T04:57:32.467000+00:00", "messageId": "1493112884945879251", "channelId": "1493099527111049228" } ];
+// Render regular items inside compact grid
+function render(list) {
+    grid.innerHTML = "";
+    count.textContent = `${list.length} tracks registered`;
 
-const grid=document.getElementById("grid");
-const search=document.getElementById("search");
-const count=document.getElementById("count");
+    if (!list.length) {
+        grid.innerHTML = '<div class="empty">No entries match your query.</div>';
+        return;
+    }
 
-function render(list){
+    list.forEach(v => {
+        const card = document.createElement("div");
+        card.className = "card";
+        // Clean routing string optimization
+        const routeName = encodeURIComponent(v.name);
+        card.onclick = () => navigateToVideo(routeName);
 
-grid.innerHTML="";
-
-count.textContent=`${list.length} videos`;
-
-if(!list.length){
-
-grid.innerHTML='<div class="empty">No videos found.</div>';
-return;
-
+        card.innerHTML = `
+            <div class="preview" data-src="${v.video}">
+                <video muted loop preload="metadata" src="${v.video}"></video>
+            </div>
+            <div class="info">
+                <div class="name">${v.name}</div>
+                <div class="meta">
+                    <div class="tag">${v.size || "N/A"}</div>
+                    <div class="tag">${v.width}×${v.height}</div>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+    initHoverPreviews();
 }
 
-list.forEach(v=>{
+// Complex Event Tracking Hook: Plays exactly 3 seconds from the true chronological midpoint
+function initHoverPreviews() {
+    document.querySelectorAll('.preview').forEach(box => {
+        const vid = box.querySelector('video');
+        let playTimeout;
 
-const card=document.createElement("div");
-card.className="card";
+        box.onmouseenter = () => {
+            if (vid.readyState >= 1 || vid.duration) {
+                triggerMidpointPlayback(vid);
+            } else {
+                vid.addEventListener('loadedmetadata', () => triggerMidpointPlayback(vid), { once: true });
+            }
+        };
 
-card.innerHTML=`
+        box.onmouseleave = () => {
+            clearTimeout(playTimeout);
+            vid.pause();
+            vid.currentTime = 0;
+        };
 
-<div class="preview">
-
-<video
-src="${v.video}"
-muted
-loop
-preload="metadata"
-onmouseenter="this.play()"
-onmouseleave="this.pause();this.currentTime=0">
-</video>
-
-<div class="play">▶</div>
-
-</div>
-
-<div class="info">
-
-<div class="name">${v.name}</div>
-
-<div class="meta">
-
-<div class="tag">${v.size||""}</div>
-
-<div class="tag">${v.width}×${v.height}</div>
-
-<div class="tag">${v.author||"Unknown"}</div>
-
-</div>
-
-<div class="buttons">
-
-<button
-class="watch"
-onclick="playVideo('${v.video}')">
-Watch
-</button>
-
-<button
-class="download"
-onclick="window.open('${v.video}')">
-Download
-</button>
-
-</div>
-
-</div>
-`;
-
-grid.appendChild(card);
-
-});
-
+        function triggerMidpointPlayback(v) {
+            const duration = v.duration || 10; // Fallback estimate
+            const midpoint = duration / 2;
+            v.currentTime = midpoint;
+            
+            v.play().then(() => {
+                playTimeout = setTimeout(() => {
+                    v.pause();
+                    v.currentTime = 0;
+                }, 3000); // Strict 3 second cap
+            }).catch(() => {});
+        }
+    });
 }
 
-function playVideo(url){
+// Router State Machine Logic
+function navigateToVideo(routeName) {
+    const videoName = decodeURIComponent(routeName);
+    const videoData = videos.find(v => v.name === videoName);
+    
+    if (!videoData) return;
 
-const player=document.getElementById("player");
-
-player.src=url;
-
-document.getElementById("modal").style.display="flex";
-
-player.play();
-
+    // Push local browser history safe routing path standard for SPAs
+    history.pushState({ type: 'video', name: videoName }, "", `./${routeName}`);
+    renderSingleView(videoData);
 }
 
-function closePlayer(){
-
-const player=document.getElementById("player");
-
-player.pause();
-
-player.src="";
-
-document.getElementById("modal").style.display="none";
-
+function navigateToGallery() {
+    history.pushState({ type: 'gallery' }, "", window.location.pathname.replace(/\/[^\/]*$/, ''));
+    showGalleryView();
 }
 
-search.oninput=e=>{
+function showGalleryView() {
+    document.getElementById("single-view").style.display = "none";
+    document.getElementById("main-header").style.display = "flex";
+    document.getElementById("grid-view").style.display = "block";
+    document.getElementById("player-target").innerHTML = ""; // Destroys active single session
+}
 
-const q=e.target.value.toLowerCase();
+function renderSingleView(v) {
+    document.getElementById("grid-view").style.display = "none";
+    document.getElementById("main-header").style.display = "none";
+    
+    const singleView = document.getElementById("single-view");
+    singleView.style.display = "flex";
 
-render(videos.filter(v=>
+    document.getElementById("single-video-title").textContent = v.name;
+    document.getElementById("single-video-meta").innerHTML = `
+        <div class="tag">Size: ${v.size}</div>
+        <div class="tag">Resolution: ${v.width}x${v.height}</div>
+        <div class="tag">Author: ${v.author}</div>
+    `;
 
-(v.name||"").toLowerCase().includes(q) ||
+    // Injects precise requested VideoJS structural DOM template cleanly
+    document.getElementById("player-target").innerHTML = `
+        <video-player>
+          <media-container class="media-default-skin media-default-skin--video">
+            <video src="${v.video}" playsinline></video>
+            <media-buffering-indicator class="media-buffering-indicator">
+              <div class="media-surface"><media-icon name="spinner" class="media-icon"></media-icon></div>
+            </media-buffering-indicator>
+            <media-error-dialog class="media-error">
+              <div class="media-error__dialog media-surface">
+                <div class="media-error__content">
+                  <media-alert-dialog-title class="media-error__title">Something went wrong.</media-alert-dialog-title>
+                  <media-alert-dialog-description class="media-error__description"></media-alert-dialog-description>
+                </div>
+                <div class="media-error__actions">
+                  <media-alert-dialog-close class="media-button media-button--primary">OK</media-alert-dialog-close>
+                </div>
+              </div>
+            </media-error-dialog>
+            <media-controls class="media-surface media-controls">
+              <media-tooltip-group>
+                <div class="media-button-group">
+                  <media-play-button commandfor="play-tooltip" class="media-button media-button--subtle media-button--icon media-button--play">
+                    <media-icon name="restart" class="media-icon media-icon--restart"></media-icon>
+                    <media-icon name="play" class="media-icon media-icon--play"></media-icon>
+                    <media-icon name="pause" class="media-icon media-icon--pause"></media-icon>
+                  </media-play-button>
+                  <media-tooltip id="play-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
+                  <media-seek-button commandfor="seek-backward-tooltip" seconds="-10" class="media-button media-button--subtle media-button--icon media-button--seek">
+                    <span class="media-icon__container"><media-icon name="seek" class="media-icon media-icon--flipped"></media-icon><span class="media-icon__label">10</span></span>
+                  </media-seek-button>
+                  <media-tooltip id="seek-backward-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
+                  <media-seek-button commandfor="seek-forward-tooltip" seconds="10" class="media-button media-button--subtle media-button--icon media-button--seek">
+                    <span class="media-icon__container"><media-icon name="seek" class="media-icon"></media-icon><span class="media-icon__label">10</span></span>
+                  </media-seek-button>
+                  <media-tooltip id="seek-forward-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
+                </div>
+                <div class="media-time-controls">
+                  <media-time type="current" class="media-time"></media-time>
+                  <media-time-slider class="media-slider">
+                    <media-slider-track class="media-slider__track">
+                      <media-slider-fill class="media-slider__fill"></media-slider-fill>
+                      <media-slider-buffer class="media-slider__buffer"></media-slider-buffer>
+                    </media-slider-track>
+                    <media-slider-thumb class="media-slider__thumb"></media-slider-thumb>
+                  </media-time-slider>
+                  <media-time type="duration" class="media-time"></media-time>
+                </div>
+                <div class="media-button-group">
+                  <media-mute-button commandfor="video-volume-popover" class="media-button media-button--subtle media-button--icon media-button--mute">
+                    <media-icon name="volume-off" class="media-icon media-icon--volume-off"></media-icon>
+                    <media-icon name="volume-low" class="media-icon media-icon--volume-low"></media-icon>
+                    <media-icon name="volume-high" class="media-icon media-icon--volume-high"></media-icon>
+                  </media-mute-button>
+                  <media-popover id="video-volume-popover" open-on-hover delay="200" close-delay="100" side="top" class="media-surface media-popover media-popover--volume">
+                    <media-volume-slider class="media-slider" orientation="vertical" thumb-alignment="edge">
+                      <media-slider-track class="media-slider__track"><media-slider-fill class="media-slider__fill"></media-slider-fill></media-slider-track>
+                      <media-slider-thumb class="media-slider__thumb media-slider__thumb--persistent"></media-slider-thumb>
+                    </media-volume-slider>
+                  </media-popover>
+                  <media-fullscreen-button commandfor="fullscreen-tooltip" class="media-button media-button--subtle media-button--icon media-button--fullscreen">
+                    <media-icon name="fullscreen-enter" class="media-icon media-icon--fullscreen-enter"></media-icon>
+                    <media-icon name="fullscreen-exit" class="media-icon media-icon--fullscreen-exit"></media-icon>
+                  </media-fullscreen-button>
+                  <media-tooltip id="fullscreen-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
+                </div>
+              </media-tooltip-group>
+            </media-controls>
+            <div class="media-overlay"></div>
+            <media-hotkey keys="Space" action="togglePaused"></media-hotkey>
+            <media-hotkey keys="f" action="toggleFullscreen"></media-hotkey>
+          </media-container>
+        </video-player>
+    `;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+}
 
-(v.author||"").toLowerCase().includes(q)
-
-));
-
+// Universal Listeners
+search.oninput = e => {
+    const q = e.target.value.toLowerCase();
+    render(videos.filter(v => 
+        (v.name || "").toLowerCase().includes(q) || 
+        (v.author || "").toLowerCase().includes(q)
+    ));
 };
 
-render(videos);
+// Monitor direct browser forward/backward actions dynamically
+window.onpopstate = (event) => {
+    if (event.state && event.state.type === 'video') {
+        const targetVideo = videos.find(v => v.name === event.state.name);
+        if (targetVideo) renderSingleView(targetVideo);
+    } else {
+        showGalleryView();
+    }
+};
 
+// Application Initialisation Engine Checks
+const currentPathSegment = window.location.pathname.split('/').pop();
+const initialMatch = videos.find(v => encodeURIComponent(v.name) === currentPathSegment);
+if (initialMatch) {
+    renderSingleView(initialMatch);
+} else {
+    render(videos);
+}
 </script>
-
 </body>
 </html>
