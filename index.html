@@ -174,7 +174,7 @@ header {
     cursor: pointer;
 }
 
-/* --- Unified Theater Enclosure Container --- */
+/* --- Master Theater Enclosure Container --- */
 .theater-enclosure {
     width: 100%;
     aspect-ratio: 16/9;
@@ -183,32 +183,14 @@ header {
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 24px 48px rgba(0,0,0,0.5);
     position: relative;
+    
+    /* Strict global masking to guarantee matching rounded corners on all children */
     overflow: hidden !important;
-    /* Enforce identical clipping geometry on all component children styles */
     clip-path: inset(0 round var(--ios-radius)) !important;
     -webkit-clip-path: inset(0 round var(--ios-radius)) !important;
 }
 
-/* --- Global Player Rules --- */
-video-player {
-    position: relative !important;
-    width: 100% !important;
-    height: 100% !important;
-    display: block !important;
-    z-index: 1;
-    border-radius: inherit !important;
-}
-
-video-skin {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    position: relative !important;
-    overflow: hidden !important;
-    border-radius: inherit !important;
-}
-
-/* Real-time blurring background track */
+/* --- Isolated Background Blur Layer --- */
 .backdrop-blur-canvas {
     position: absolute !important;
     top: -10% !important;
@@ -216,26 +198,47 @@ video-skin {
     width: 120% !important;
     height: 120% !important;
     object-fit: cover !important;
-    filter: blur(30px) brightness(0.45) saturate(140%) !important;
+    filter: blur(28px) brightness(0.5) saturate(130%) !important;
     z-index: 1 !important;
     pointer-events: none !important;
-    border-radius: inherit !important;
 }
 
-/* Main Interactive Foreground Video Track */
+/* --- Isolated Foreground Component Layer --- */
+video-player {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    z-index: 2 !important;
+    background: transparent !important;
+}
+
+video-skin {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;
+    background: transparent !important;
+}
+
+/* Sharp Content Track with Dynamic Gradient Feathering Edges */
 video-player video.fg-canvas-track {
     width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
     position: relative !important;
-    z-index: 3 !important; /* Stack cleanly above blur background and mask overlays */
     background: transparent !important;
-    border-radius: inherit !important;
-    pointer-events: auto !important; /* Lock pointer controls open for user interaction */
+    pointer-events: auto !important;
     
-    /* Dynamically feather/fade the hard letterbox borders to blend natively into the blur background */
-    mask-image: radial-gradient(circle, #000 70%, rgba(0,0,0,0) 100%) !important;
-    -webkit-mask-image: radial-gradient(circle, #000 70%, rgba(0,0,0,0) 100%) !important;
+    /* Dynamically blends video letterbox boundaries into the blur layer smoothly */
+    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%),
+                linear-gradient(to bottom, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+    mask-composite: intersect !important;
+    -webkit-mask-image: -webkit-linear-gradient(left, transparent 0%, black 8%, black 92%, transparent 100%),
+                        -webkit-linear-gradient(top, transparent 0%, black 8%, black 92%, transparent 100%) !important;
+    -webkit-mask-composite: source-in !important;
 }
 
 video-player video::-webkit-media-controls {
@@ -407,11 +410,11 @@ function renderCinemaViewport(targetAsset) {
 
     const injectionPoint = document.getElementById("video-injection-nexus");
     
-    // Injected with precise background/foreground layer orchestration
+    // Decoupled Dom Layer Architecture: Blur is moved completely outside the custom web component layer
     injectionPoint.innerHTML = `
+        <video class="backdrop-blur-canvas" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
         <video-player controls autoplay>
             <video-skin>
-                <video class="backdrop-blur-canvas" id="bg-blur-track" src="${targetAsset.video}" muted loop playsinline></video>
                 <video class="fg-canvas-track" id="main-fg-track" src="${targetAsset.video}" playsinline></video>
             </video-skin>
         </video-player>
@@ -422,18 +425,18 @@ function renderCinemaViewport(targetAsset) {
         const backgroundBlurTrack = injectionPoint.querySelector('#bg-blur-track');
         if (!targetVideo || !backgroundBlurTrack) return;
 
-        // Force correct parameters down the stack to match layout bounds
+        // Force explicit layout rules down the component stack override
         targetVideo.style.setProperty('object-fit', 'contain', 'important');
         targetVideo.style.setProperty('width', '100%', 'important');
         targetVideo.style.setProperty('height', '100%', 'important');
         targetVideo.style.setProperty('background', 'transparent', 'important');
 
-        // Connect track runtime sync loops
+        // Master playback synchronization engine
         targetVideo.addEventListener('play', () => backgroundBlurTrack.play());
         targetVideo.addEventListener('pause', () => backgroundBlurTrack.pause());
         targetVideo.addEventListener('seeking', () => backgroundBlurTrack.currentTime = targetVideo.currentTime);
         targetVideo.addEventListener('timeupdate', () => {
-            if (Math.abs(backgroundBlurTrack.currentTime - targetVideo.currentTime) > 0.2) {
+            if (Math.abs(backgroundBlurTrack.currentTime - targetVideo.currentTime) > 0.15) {
                 backgroundBlurTrack.currentTime = targetVideo.currentTime;
             }
         });
@@ -441,7 +444,7 @@ function renderCinemaViewport(targetAsset) {
         if (!targetVideo.paused) { backgroundBlurTrack.play().catch(() => {}); }
     }
 
-    // Force validation pass
+    // Run synchronization routine checks
     applyShadowGroundedFixes();
     const foregroundVideo = injectionPoint.querySelector('#main-fg-track');
     if (foregroundVideo) {
