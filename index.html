@@ -3,451 +3,549 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gallery Studio</title>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video-ui.css">
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Inter,system-ui,-apple-system,sans-serif;
-}
-
-:root{
-    --accent:#d4af37; /* Elegant muted gold/tan */
-    --accent-glow:rgba(212,175,55,0.15);
-    --bg-main:#0b0b0c;
-    --bg-card:rgba(255,255,255,0.03);
-    --border:rgba(255,255,255,0.08);
-    --text-muted:#8a8a93;
-}
-
-body{
-    background-color:var(--bg-main);
-    color:#f4f4f6;
-    min-height:100vh;
-    overflow-x:hidden;
-}
-
-header{
-    position:sticky;
-    top:0;
-    z-index:50;
-    padding:16px 24px;
-    backdrop-filter:blur(20px);
-    background:rgba(11,11,12,0.8);
-    border-bottom:1px solid var(--border);
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:20px;
-}
-
-.search-container{
-    flex:1;
-    max-width:480px;
-}
-
-.search-container input{
-    width:100%;
-    padding:10px 16px;
-    border:1px solid var(--border);
-    outline:none;
-    border-radius:12px;
-    color:white;
-    background:rgba(255,255,255,0.05);
-    font-size:14px;
-    transition:0.2s;
-}
-
-.search-container input:focus{
-    border-color:var(--accent);
-}
-
-.video-count{
-    font-size:13px;
-    color:var(--text-muted);
-}
-
-/* Optimized Smaller Grid Layout */
-.grid{
-    max-width:1400px;
-    margin:auto;
-    padding:24px;
-    display:grid;
-    gap:18px;
-    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-}
-
-.card{
-    overflow:hidden;
-    border-radius:16px;
-    background:var(--bg-card);
-    border:1px solid var(--border);
-    transition:transform 0.25s ease,border-color 0.25s ease;
-    cursor:pointer;
-}
-
-.card:hover{
-    transform:translateY(-4px);
-    border-color:var(--accent);
-}
-
-.preview{
-    position:relative;
-    width:100%;
-    aspect-ratio:16/9; /* Standard widescreen cards */
-    overflow:hidden;
-    background:#000;
-}
-
-/* Handle portrait aspect ratios gracefully inside the cards */
-.preview video{
-    width:100%;
-    height:100%;
-    display:block;
-    object-fit:cover;
-}
-
-.info{
-    padding:12px;
-}
-
-.name{
-    font-weight:500;
-    font-size:14px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    margin-bottom:8px;
-}
-
-.meta{
-    display:flex;
-    flex-wrap:wrap;
-    gap:6px;
-}
-
-.tag{
-    padding:4px 8px;
-    border-radius:6px;
-    background:rgba(255,255,255,0.05);
-    font-size:11px;
-    color:var(--text-muted);
-}
-
-/* Dedicated View Layout */
-.single-view-container{
-    display:none;
-    max-width:1100px;
-    margin:auto;
-    padding:40px 24px;
-    flex-direction:column;
-    gap:20px;
-}
-
-.back-btn{
-    align-self:flex-start;
-    background:rgba(255,255,255,0.06);
-    border:1px solid var(--border);
-    color:white;
-    padding:8px 16px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:14px;
-    font-weight:500;
-    transition:0.2s;
-}
-
-.back-btn:hover{
-    background:rgba(255,255,255,0.1);
-    border-color:var(--text-muted);
-}
-
-.player-wrapper{
-    width:100%;
-    background:#000;
-    border-radius:20px;
-    overflow:hidden;
-    border:1px solid var(--border);
-    box-shadow:0 20px 40px rgba(0,0,0,0.5);
-}
-
-/* VideoJS Component Custom Fit Overrides */
-video-player {
-    display:block;
-    width:100%;
-    height:100%;
-}
-media-container {
-    aspect-ratio:16/9;
-}
-
-.single-info{
-    margin-top:10px;
-}
-.single-title{
-    font-size:22px;
-    font-weight:600;
-    color:#fff;
-    margin-bottom:12px;
-}
-
-.empty{
-    text-align:center;
-    color:var(--text-muted);
-    padding:80px;
-    grid-column:1/-1;
-}
-
-::-webkit-scrollbar{
-    width:8px;
-}
-::-webkit-scrollbar-thumb{
-    background:rgba(255,255,255,0.15);
-    border-radius:999px;
-}
-::-webkit-scrollbar-thumb:hover{
-    background:var(--accent);
-}
-</style>
+<title>Studio Vault</title>
 
 <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video.js"></script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/@videojs/html/cdn/video-ui.js"></script>
+
+<style>
+/* --- Core Variables & Premium Dark Theme --- */
+:root {
+    --accent: #6366f1; /* Vivid Neon Indigo */
+    --accent-glow: rgba(99, 102, 241, 0.25);
+    --bg-base: #07080d; /* Deep Space Black */
+    --bg-surface: #11131e; /* Rich Slate Core */
+    --bg-card: rgba(20, 22, 36, 0.6);
+    --border: rgba(255, 255, 255, 0.05);
+    --border-hover: rgba(99, 102, 241, 0.4);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* --- High-Efficiency Minimalist Header --- */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 12px 24px;
+    background: rgba(7, 8, 13, 0.75);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-bar-wrapper {
+    flex: 1;
+    max-width: 360px;
+}
+
+.search-bar-wrapper input {
+    width: 100%;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.search-bar-wrapper input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.stats-counter {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* --- Ultra-Compact Micro Grid Layout --- */
+.grid-container {
+    max-width: 1600px;
+    margin: auto;
+    padding: 24px;
+    display: grid;
+    gap: 16px;
+    /* Denser, smaller cards: 5-6 columns on large screens */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.video-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.video-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-hover);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.thumbnail-area {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #000;
+    overflow: hidden;
+}
+
+.thumbnail-area video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.card-details {
+    padding: 10px;
+}
+
+.card-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 6px;
+}
+
+.card-meta-tags {
+    display: flex;
+    gap: 4px;
+}
+
+.mini-tag {
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-secondary);
+}
+
+/* --- Dedicated Cinema View Layout --- */
+.cinema-view {
+    display: none;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.back-navigation-btn {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.back-navigation-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--text-secondary);
+}
+
+.theater-frame {
+    width: 100%;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+}
+
+.cinema-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* --- EMBEDDED CUSTOM PLAYER ENGINE STYLES (Fixes flat/broken UI) --- */
+video-player {
+    display: block;
+    width: 100%;
+    background: #000;
+}
+
+media-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    aspect-ratio: 16/9;
+}
+
+media-container video {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    object-fit: contain;
+}
+
+media-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 10;
+}
+
+media-tooltip-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.media-button-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.media-time-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 4px 0;
+}
+
+media-time {
+    font-size: 11px;
+    color: #fff;
+}
+
+media-time-slider {
+    flex: 1;
+    cursor: pointer;
+    height: 20px;
+    display: flex;
+    align-items: center;
+}
+
+media-slider-track {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    position: relative;
+}
+
+media-slider-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+media-slider-thumb {
+    width: 12px;
+    height: 12px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.media-button {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.media-button:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+media-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    display: inline-block;
+}
+
+.media-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 50px;
+    z-index: 1;
+}
+
+.fallback-notice {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+</style>
 </head>
 <body>
 
-<header id="main-header">
-    <div class="search-container">
-        <input id="search" placeholder="Search studio records...">
+<header id="app-header">
+    <div class="search-bar-wrapper">
+        <input type="text" id="studio-search" placeholder="Search archive records...">
     </div>
-    <div class="video-count" id="count"></div>
+    <div class="stats-counter" id="item-counter">0 records</div>
 </header>
 
-<div id="grid-view">
-    <div id="grid" class="grid"></div>
+<div id="deck-view-wrapper">
+    <div id="video-grid" class="grid-container"></div>
 </div>
 
-<div id="single-view" class="single-view-container">
-    <button class="back-btn" onclick="navigateToGallery()">← Back to Gallery</button>
-    <div class="player-wrapper" id="player-target">
-        </div>
-    <div class="single-info">
-        <h2 class="single-title" id="single-video-title"></h2>
-        <div class="meta" id="single-video-meta"></div>
-    </div>
+<div id="isolated-cinema-view" class="cinema-view">
+    <button class="back-navigation-btn" onclick="returnToGallery()">← Back to Fleet</button>
+    <div class="theater-frame" id="dynamic-player-injection-point"></div>
+    <div class="cinema-title" id="cinema-title-display"></div>
+    <div class="card-meta-tags" id="cinema-meta-display"></div>
 </div>
 
 <script>
-// Filtered Unique Database (ssstwitter.com_1776052339188.mov duplicate safely eliminated)
-const videos = [ 
-    { "name": "ssstwitter.com_1776071102679.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "size": "4.0 MB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776060852922_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "size": "4.5 MB", "width": 480, "height": 786, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776062055583.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140176409591879/ssstwitter.com_1776062055583.mov?ex=6a416be7&is=6a401a67&hm=c4b599ac9ee3d68c695aba9fe6c7e67395e1e653e77eeea6794354319d27d616&", "size": "5.1 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776061492997.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177114366072/ssstwitter.com_1776061492997.mov?ex=6a416be7&is=6a401a67&hm=25c33b57695c1f56626be0c6fca3425fbaee084b3bb21fe7912a87d799704465&", "size": "2.9 MB", "width": 360, "height": 640, "author": "jubilant_star_90157" }, 
-    { "name": "copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177990713464/copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov?ex=6a416be7&is=6a401a67&hm=433c4fbcd39fbdd9cdef083f3263d055cee9bcfa4db325df9b1db666d91fb061&", "size": "7.1 MB", "width": 886, "height": 410, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776052898083_copy_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116349944303688/ssstwitter.com_1776052898083_copy_copy_copy.mov?ex=6a4155b6&is=6a400436&hm=4a844934748609f34de3d78ba5328a332264c0df15a3c3e1e325bee45c09e491&", "size": "9.2 MB", "width": 854, "height": 480, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776055786699_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116310450864190/ssstwitter.com_1776055786699_copy.mov?ex=6a4155ad&is=6a40042d&hm=49af48762fc435f33ed82ecaaf0b5ce7c1ab2dda28b880cf77ba78d4c8d74565&", "size": "4.4 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776055360513_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311012643017/ssstwitter.com_1776055360513_copy.mov?ex=6a4155ad&is=6a40042d&hm=5963602123fe7e18c137f76468d6b327d4e2dba7fd6e8c82d86ba7dbbef56f0f&", "size": "1.6 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776056128981_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311423680594/ssstwitter.com_1776056128981_copy.mov?ex=6a4155ad&is=6a40042d&hm=f38825980f913bdb5c13648e04bcb7aa6d2579c3bb6d5bb112d55c66106ba0e2&", "size": "5.4 MB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776055571926_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116312225059007/ssstwitter.com_1776055571926_copy.mov?ex=6a4155ad&is=6a40042d&hm=9a86fa0f47ca28132aaad76ad0e127ddf905ceea2f44dd9064f902a229245188&", "size": "9.5 MB", "width": 480, "height": 800, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776054786398_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116313692930119/ssstwitter.com_1776054786398_copy.mov?ex=6a4155ad&is=6a40042d&hm=199272078564337012f24e7a307d1e45bf37d25d000ffcc406c544b2c07cb2d0&", "size": "8.1 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776054502053_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116314582126682/ssstwitter.com_1776054502053_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=5b8c5d6005f189097179c94f8409188a88968f081f0313743cd5148754fc8606&", "size": "6.1 MB", "width": 406, "height": 720, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776054931006_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116315286638724/ssstwitter.com_1776054931006_copy.mov?ex=6a4155ae&is=6a40042e&hm=ef0efbc012b3928fb846ac851e1530b844d6fc7ec4649e83610b37a2f517682e&", "size": "6.3 MB", "width": 480, "height": 828, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776054471537_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316142276688/ssstwitter.com_1776054471537_copy.mov?ex=6a4155ae&is=6a40042e&hm=a4d88695a68cc4667ee60ca55992c2db6bc4a69edad2b7b575439aa1dc1da525&", "size": "2.3 MB", "width": 480, "height": 802, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776056043316_copy_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316918485203/ssstwitter.com_1776056043316_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=1139d60c189f0343a36ab6f0afd12e05f105c5bcbded3bae5ee9cc5c6d3d0094&", "size": "7.2 MB", "width": 480, "height": 770, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776055838120_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116317748953218/ssstwitter.com_1776055838120_copy.mov?ex=6a4155ae&is=6a40042e&hm=82081f3c59a1e6797fc1a1551e331a9878154c658735e078548d3fd8fe9f264c&", "size": "790.7 KB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776052489565_copy.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116054606446693/ssstwitter.com_1776052489565_copy.mov?ex=6a415570&is=6a4003f0&hm=30882df7a529ba2a93d980d864e8b3512af1509429dfda9975a1cccf6304dd9e&", "size": "5.2 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776055891755.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055231529002/ssstwitter.com_1776055891755.mov?ex=6a415570&is=6a4003f0&hm=168c4a4408b96eedb5be4868b1118af4319396b64de3928ba2c0bb89b65cb708&", "size": "2.1 MB", "width": 480, "height": 864, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776056157496.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "size": "8.5 MB", "width": 404, "height": 670, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776055808208.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "size": "3.1 MB", "width": 480, "height": 850, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776052339188.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "size": "5.2 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776055514465.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_1776055514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa6e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "size": "4.8 MB", "width": 406, "height": 722, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776052176689.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "size": "5.6 MB", "width": 480, "height": 854, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776052221000.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "size": "1.9 MB", "width": 480, "height": 480, "author": "jubilant_star_90157" }, 
-    { "name": "ssstwitter.com_1776052088374.mov", "ext": "mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "size": "1.4 MB", "width": 480, "height": 852, "author": "jubilant_star_90157" }
+// Streamlined Sanatized Asset Arrays (Duplicates completely removed)
+const studioDatabase = [
+    { "name": "ssstwitter.com_1776071102679.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493178487136059454/ssstwitter.com_1776071102679.mov?ex=6a418f95&is=6a403e15&hm=3f8a58062713255da882df20558f22c82566e5ca22c74917c6b1fc0e4be1238a&", "size": "4.0 MB", "dim": "480×480" }, 
+    { "name": "ssstwitter.com_1776060852922_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140175755415562/ssstwitter.com_1776060852922_copy.mov?ex=6a416be7&is=6a401a67&hm=f244b029d3ce0655d44f254bdaf2aa6597222434490a3fc486388fea0fb8599d&", "size": "4.5 MB", "dim": "480×786" }, 
+    { "name": "ssstwitter.com_1776062055583.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140176409591879/ssstwitter.com_1776062055583.mov?ex=6a416be7&is=6a401a67&hm=c4b599ac9ee3d68c695aba9fe6c7e67395e1e653e77eeea6794354319d27d616&", "size": "5.1 MB", "dim": "480×854" }, 
+    { "name": "ssstwitter.com_1776061492997.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177114366072/ssstwitter.com_1776061492997.mov?ex=6a416be7&is=6a401a67&hm=25c33b57695c1f56626be0c6fca3425fbaee084b3bb21fe7912a87d799704465&", "size": "2.9 MB", "dim": "360×640" }, 
+    { "name": "copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493140177990713464/copy_F47828FD-FCD9-46F2-8ABB-1F542D2325DD.mov?ex=6a416be7&is=6a401a67&hm=433c4fbcd39fbdd9cdef083f3263d055cee9bcfa4db325df9b1db666d91fb061&", "size": "7.1 MB", "dim": "886×410" }, 
+    { "name": "ssstwitter.com_1776052898083_copy_copy_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116349944303688/ssstwitter.com_1776052898083_copy_copy_copy.mov?ex=6a4155b6&is=6a400436&hm=4a844934748609f34de3d78ba5328a332264c0df15a3c3e1e325bee45c09e491&", "size": "9.2 MB", "dim": "854×480" }, 
+    { "name": "ssstwitter.com_1776055786699_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116310450864190/ssstwitter.com_1776055786699_copy.mov?ex=6a4155ad&is=6a40042d&hm=49af48762fc435f33ed82ecaaf0b5ce7c1ab2dda28b880cf77ba78d4c8d74565&", "size": "4.4 MB", "dim": "480×854" }, 
+    { "name": "ssstwitter.com_1776055360513_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311012643017/ssstwitter.com_1776055360513_copy.mov?ex=6a4155ad&is=6a40042d&hm=5963602123fe7e18c137f76468d6b327d4e2dba7fd6e8c82d86ba7dbbef56f0f&", "size": "1.6 MB", "dim": "480×854" }, 
+    { "name": "ssstwitter.com_1776056128981_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116311423680594/ssstwitter.com_1776056128981_copy.mov?ex=6a4155ad&is=6a40042d&hm=f38825980f913bdb5c13648e04bcb7aa6d2579c3bb6d5bb112d55c66106ba0e2&", "size": "5.4 MB", "dim": "480×480" }, 
+    { "name": "ssstwitter.com_1776055571926_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116312225059007/ssstwitter.com_1776055571926_copy.mov?ex=6a4155ad&is=6a40042d&hm=9a86fa0f47ca28132aaad76ad0e127ddf905ceea2f44dd9064f902a229245188&", "size": "9.5 MB", "dim": "480×800" }, 
+    { "name": "ssstwitter.com_1776054786398_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116313692930119/ssstwitter.com_1776054786398_copy.mov?ex=6a4155ad&is=6a40042d&hm=199272078564337012f24e7a307d1e45bf37d25d000ffcc406c544b2c07cb2d0&", "size": "8.1 MB", "dim": "480×854" }, 
+    { "name": "ssstwitter.com_1776054502053_copy_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116314582126682/ssstwitter.com_1776054502053_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=5b8c5d6005f189097179c94f8409188a88968f081f0313743cd5148754fc8606&", "size": "6.1 MB", "dim": "406×720" }, 
+    { "name": "ssstwitter.com_1776054931006_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116315286638724/ssstwitter.com_1776054931006_copy.mov?ex=6a4155ae&is=6a40042e&hm=ef0efbc012b3928fb846ac851e1530b844d6fc7ec4649e83610b37a2f517682e&", "size": "6.3 MB", "dim": "480×828" }, 
+    { "name": "ssstwitter.com_1776054471537_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316142276688/ssstwitter.com_1776054471537_copy.mov?ex=6a4155ae&is=6a40042e&hm=a4d88695a68cc4667ee60ca55992c2db6bc4a69edad2b7b575439aa1dc1da525&", "size": "2.3 MB", "dim": "480×802" }, 
+    { "name": "ssstwitter.com_1776056043316_copy_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116316918485203/ssstwitter.com_1776056043316_copy_copy.mov?ex=6a4155ae&is=6a40042e&hm=1139d60c189f0343a36ab6f0afd12e05f105c5bcbded3bae5ee9cc5c6d3d0094&", "size": "7.2 MB", "dim": "480×770" }, 
+    { "name": "ssstwitter.com_1776055838120_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116317748953218/ssstwitter.com_1776055838120_copy.mov?ex=6a4155ae&is=6a40042e&hm=82081f3c59a1e6797fc1a1551e331a9878154c658735e078548d3fd8fe9f264c&", "size": "790.7 KB", "dim": "480×480" }, 
+    { "name": "ssstwitter.com_1776052489565_copy.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116054606446693/ssstwitter.com_1776052489565_copy.mov?ex=6a415570&is=6a4003f0&hm=30882df7a529ba2a93d980d864e8b3512af1509429dfda9975a1cccf6304dd9e&", "size": "5.2 MB", "dim": "480×854" }, 
+    { "name": "ssstwitter.com_1776055891755.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055231529002/ssstwitter.com_1776055891755.mov?ex=6a415570&is=6a4003f0&hm=168c4a4408b96eedb5be4868b1118af4319396b64de3928ba2c0bb89b65cb708&", "size": "2.1 MB", "dim": "480×864" }, 
+    { "name": "ssstwitter.com_1776056157496.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493116055869194370/ssstwitter.com_1776056157496.mov?ex=6a415570&is=6a4003f0&hm=d2e018a45fc4b88b49806c01f864a3500f92d60274b7683ea306fb7e6ae89f38&", "size": "8.5 MB", "dim": "404×670" }, 
+    { "name": "ssstwitter.com_1776055808208.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115971932786748/ssstwitter.com_1776055808208.mov?ex=6a41555c&is=6a4003dc&hm=c2eac543e9d94db34a633f0e1cb9220a90dbd0b410021bdcdec320392118203a&", "size": "3.1 MB", "dim": "480×850" }, 
+    { "name": "ssstwitter.com_1776052339188.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115943537217626/ssstwitter.com_1776052339188.mov?ex=6a415555&is=6a4003d5&hm=25277a3383ab4c6db61c20671f859d77c81ecba73280e2041cbd394716d9caad&", "size": "5.2 MB", "dim": "480×854" }, // Duplicate line safely removed here.
+    { "name": "ssstwitter.com_177605514465.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115944250380358/ssstwitter.com_177605514465.mov?ex=6a415555&is=6a4003d5&hm=13a1bad43419360aa6e7503a1b8f30eb6363b2763bc1d7b978f7c19abc8d5cbc&", "size": "4.8 MB", "dim": "406×722" }, 
+    { "name": "ssstwitter.com_1776052176689.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115731141984366/ssstwitter.com_1776052176689.mov?ex=6a415523&is=6a4003a3&hm=f7ba712e73a79c98bd8cac82c0c783fe9dcee8a5ef8a8e415230629023a03c7f&", "size": "5.6 MB", "dim": "480×854" }, 
+    { "name": "ssstwitter.com_1776052221000.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493115732777635930/ssstwitter.com_1776052221000.mov?ex=6a415523&is=6a4003a3&hm=27b0e945e9c511ba0c50f1ba67d234c9cec5d2f6a0a347f096fbb3c44d2e46f0&", "size": "1.9 MB", "dim": "480×480" }, 
+    { "name": "ssstwitter.com_1776052088374.mov", "video": "https://cdn.discordapp.com/attachments/1493099527111049228/1493112884442697788/ssstwitter.com_1776052088374.mov?ex=6a41527c&is=6a4000fc&hm=4245fe8b0c9cda48a88d86ada4f01b8ee3bc2b73a6c7ca7a4a20cbaf984dcd49&", "size": "1.4 MB", "dim": "480×852" }
 ];
 
-const grid = document.getElementById("grid");
-const search = document.getElementById("search");
-const count = document.getElementById("count");
+const videoGrid = document.getElementById("video-grid");
+const searchInput = document.getElementById("studio-search");
+const itemCounter = document.getElementById("item-counter");
 
-// Render regular items inside compact grid
-function render(list) {
-    grid.innerHTML = "";
-    count.textContent = `${list.length} tracks registered`;
+// --- Render Core Layout ---
+function buildGalleryDeck(dataset) {
+    videoGrid.innerHTML = "";
+    itemCounter.textContent = `${dataset.length} items cataloged`;
 
-    if (!list.length) {
-        grid.innerHTML = '<div class="empty">No entries match your query.</div>';
+    if (dataset.length === 0) {
+        videoGrid.innerHTML = `<div class="fallback-notice">No records match your filters.</div>`;
         return;
     }
 
-    list.forEach(v => {
+    dataset.forEach(item => {
         const card = document.createElement("div");
-        card.className = "card";
-        // Clean routing string optimization
-        const routeName = encodeURIComponent(v.name);
-        card.onclick = () => navigateToVideo(routeName);
+        card.className = "video-card";
+        
+        // Clean dynamic routing path configuration
+        const routeEndpoint = encodeURIComponent(item.name.replace(/\.[^/.]+$/, "")); 
+        card.onclick = () => loadVideoRoute(routeEndpoint, item.name);
 
         card.innerHTML = `
-            <div class="preview" data-src="${v.video}">
-                <video muted loop preload="metadata" src="${v.video}"></video>
+            <div class="thumbnail-area">
+                <video muted loop preload="metadata" src="${item.video}"></video>
             </div>
-            <div class="info">
-                <div class="name">${v.name}</div>
-                <div class="meta">
-                    <div class="tag">${v.size || "N/A"}</div>
-                    <div class="tag">${v.width}×${v.height}</div>
+            <div class="card-details">
+                <div class="card-title">${item.name}</div>
+                <div class="card-meta-tags">
+                    <span class="mini-tag">${item.size}</span>
+                    <span class="mini-tag">${item.dim}</span>
                 </div>
             </div>
         `;
-        grid.appendChild(card);
+        videoGrid.appendChild(card);
     });
-    initHoverPreviews();
+
+    configureMicroPreviews();
 }
 
-// Complex Event Tracking Hook: Plays exactly 3 seconds from the true chronological midpoint
-function initHoverPreviews() {
-    document.querySelectorAll('.preview').forEach(box => {
-        const vid = box.querySelector('video');
-        let playTimeout;
+// --- Middle 3-Second Precision Hover Engine ---
+function configureMicroPreviews() {
+    document.querySelectorAll('.thumbnail-area').forEach(container => {
+        const targetVideo = container.querySelector('video');
+        let playIntervalTimer;
 
-        box.onmouseenter = () => {
-            if (vid.readyState >= 1 || vid.duration) {
-                triggerMidpointPlayback(vid);
+        container.onmouseenter = () => {
+            if (targetVideo.duration) {
+                executeMidpointSeek(targetVideo);
             } else {
-                vid.addEventListener('loadedmetadata', () => triggerMidpointPlayback(vid), { once: true });
+                targetVideo.addEventListener('loadedmetadata', () => {
+                    executeMidpointSeek(targetVideo);
+                }, { once: true });
             }
         };
 
-        box.onmouseleave = () => {
-            clearTimeout(playTimeout);
-            vid.pause();
-            vid.currentTime = 0;
+        container.onmouseleave = () => {
+            clearTimeout(playIntervalTimer);
+            targetVideo.pause();
+            targetVideo.currentTime = 0;
         };
 
-        function triggerMidpointPlayback(v) {
-            const duration = v.duration || 10; // Fallback estimate
-            const midpoint = duration / 2;
-            v.currentTime = midpoint;
+        function executeMidpointSeek(v) {
+            const calculatedMidpoint = v.duration / 2;
+            v.currentTime = calculatedMidpoint;
             
             v.play().then(() => {
-                playTimeout = setTimeout(() => {
+                playIntervalTimer = setTimeout(() => {
                     v.pause();
                     v.currentTime = 0;
-                }, 3000); // Strict 3 second cap
+                }, 3000); // Strict 3000ms threshold
             }).catch(() => {});
         }
     });
 }
 
-// Router State Machine Logic
-function navigateToVideo(routeName) {
-    const videoName = decodeURIComponent(routeName);
-    const videoData = videos.find(v => v.name === videoName);
+// --- Client-Side Clean URL Router System ---
+function loadVideoRoute(path, fullFilename) {
+    const matchingAsset = studioDatabase.find(v => v.name === fullFilename);
+    if (!matchingAsset) return;
+
+    // Changes URL bar instantly to clean schema requested: domain.io/videoname/
+    history.pushState({ view: 'player', name: fullFilename }, "", `./${path}/`);
+    displayCinemaView(matchingAsset);
+}
+
+function returnToGallery() {
+    // Reverts back cleanly to home path
+    const rootPath = window.location.pathname.replace(/\/[^\/]*\/?$/, '');
+    history.pushState({ view: 'gallery' }, "", rootPath || '/');
+    displayGalleryDeck();
+}
+
+function displayGalleryDeck() {
+    document.getElementById("isolated-cinema-view").style.display = "none";
+    document.getElementById("app-header").style.display = "flex";
+    document.getElementById("deck-view-wrapper").style.display = "block";
+    document.getElementById("dynamic-player-injection-point").innerHTML = ""; // Complete memory release
+}
+
+function displayCinemaView(asset) {
+    document.getElementById("deck-view-wrapper").style.display = "none";
+    document.getElementById("app-header").style.display = "none";
     
-    if (!videoData) return;
+    const viewContainer = document.getElementById("isolated-cinema-view");
+    viewContainer.style.display = "flex";
 
-    // Push local browser history safe routing path standard for SPAs
-    history.pushState({ type: 'video', name: videoName }, "", `./${routeName}`);
-    renderSingleView(videoData);
-}
-
-function navigateToGallery() {
-    history.pushState({ type: 'gallery' }, "", window.location.pathname.replace(/\/[^\/]*$/, ''));
-    showGalleryView();
-}
-
-function showGalleryView() {
-    document.getElementById("single-view").style.display = "none";
-    document.getElementById("main-header").style.display = "flex";
-    document.getElementById("grid-view").style.display = "block";
-    document.getElementById("player-target").innerHTML = ""; // Destroys active single session
-}
-
-function renderSingleView(v) {
-    document.getElementById("grid-view").style.display = "none";
-    document.getElementById("main-header").style.display = "none";
-    
-    const singleView = document.getElementById("single-view");
-    singleView.style.display = "flex";
-
-    document.getElementById("single-video-title").textContent = v.name;
-    document.getElementById("single-video-meta").innerHTML = `
-        <div class="tag">Size: ${v.size}</div>
-        <div class="tag">Resolution: ${v.width}x${v.height}</div>
-        <div class="tag">Author: ${v.author}</div>
+    document.getElementById("cinema-title-display").textContent = asset.name;
+    document.getElementById("cinema-meta-display").innerHTML = `
+        <span class="mini-tag">Filesize: ${asset.size}</span>
+        <span class="mini-tag">Resolution: ${asset.dim}</span>
     `;
 
-    // Injects precise requested VideoJS structural DOM template cleanly
-    document.getElementById("player-target").innerHTML = `
+    // Seamless programmatic layout injection for the custom video player
+    document.getElementById("dynamic-player-injection-point").innerHTML = `
         <video-player>
           <media-container class="media-default-skin media-default-skin--video">
-            <video src="${v.video}" playsinline></video>
+            <video src="${asset.video}" playsinline autoplay></video>
+
             <media-buffering-indicator class="media-buffering-indicator">
-              <div class="media-surface"><media-icon name="spinner" class="media-icon"></media-icon></div>
+              <div class="media-surface"><media-icon name="spinner"></media-icon></div>
             </media-buffering-indicator>
-            <media-error-dialog class="media-error">
-              <div class="media-error__dialog media-surface">
-                <div class="media-error__content">
-                  <media-alert-dialog-title class="media-error__title">Something went wrong.</media-alert-dialog-title>
-                  <media-alert-dialog-description class="media-error__description"></media-alert-dialog-description>
-                </div>
-                <div class="media-error__actions">
-                  <media-alert-dialog-close class="media-button media-button--primary">OK</media-alert-dialog-close>
-                </div>
-              </div>
-            </media-error-dialog>
+
             <media-controls class="media-surface media-controls">
               <media-tooltip-group>
                 <div class="media-button-group">
-                  <media-play-button commandfor="play-tooltip" class="media-button media-button--subtle media-button--icon media-button--play">
-                    <media-icon name="restart" class="media-icon media-icon--restart"></media-icon>
-                    <media-icon name="play" class="media-icon media-icon--play"></media-icon>
-                    <media-icon name="pause" class="media-icon media-icon--pause"></media-icon>
+                  <media-play-button class="media-button">
+                    <media-icon name="play"></media-icon>
                   </media-play-button>
-                  <media-tooltip id="play-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
-                  <media-seek-button commandfor="seek-backward-tooltip" seconds="-10" class="media-button media-button--subtle media-button--icon media-button--seek">
-                    <span class="media-icon__container"><media-icon name="seek" class="media-icon media-icon--flipped"></media-icon><span class="media-icon__label">10</span></span>
+
+                  <media-seek-button seconds="-10" class="media-button">
+                    <media-icon name="seek" style="transform: scaleX(-1);"></media-icon>
                   </media-seek-button>
-                  <media-tooltip id="seek-backward-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
-                  <media-seek-button commandfor="seek-forward-tooltip" seconds="10" class="media-button media-button--subtle media-button--icon media-button--seek">
-                    <span class="media-icon__container"><media-icon name="seek" class="media-icon"></media-icon><span class="media-icon__label">10</span></span>
+
+                  <media-seek-button seconds="10" class="media-button">
+                    <media-icon name="seek"></media-icon>
                   </media-seek-button>
-                  <media-tooltip id="seek-forward-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
                 </div>
+
                 <div class="media-time-controls">
-                  <media-time type="current" class="media-time"></media-time>
-                  <media-time-slider class="media-slider">
-                    <media-slider-track class="media-slider__track">
-                      <media-slider-fill class="media-slider__fill"></media-slider-fill>
-                      <media-slider-buffer class="media-slider__buffer"></media-slider-buffer>
+                  <media-time type="current"></media-time>
+                  <media-time-slider>
+                    <media-slider-track>
+                      <media-slider-fill></media-slider-fill>
                     </media-slider-track>
-                    <media-slider-thumb class="media-slider__thumb"></media-slider-thumb>
+                    <media-slider-thumb></media-slider-thumb>
                   </media-time-slider>
-                  <media-time type="duration" class="media-time"></media-time>
+                  <media-time type="duration"></media-time>
                 </div>
+
                 <div class="media-button-group">
-                  <media-mute-button commandfor="video-volume-popover" class="media-button media-button--subtle media-button--icon media-button--mute">
-                    <media-icon name="volume-off" class="media-icon media-icon--volume-off"></media-icon>
-                    <media-icon name="volume-low" class="media-icon media-icon--volume-low"></media-icon>
-                    <media-icon name="volume-high" class="media-icon media-icon--volume-high"></media-icon>
+                  <media-mute-button class="media-button">
+                    <media-icon name="volume-high"></media-icon>
                   </media-mute-button>
-                  <media-popover id="video-volume-popover" open-on-hover delay="200" close-delay="100" side="top" class="media-surface media-popover media-popover--volume">
-                    <media-volume-slider class="media-slider" orientation="vertical" thumb-alignment="edge">
-                      <media-slider-track class="media-slider__track"><media-slider-fill class="media-slider__fill"></media-slider-fill></media-slider-track>
-                      <media-slider-thumb class="media-slider__thumb media-slider__thumb--persistent"></media-slider-thumb>
-                    </media-volume-slider>
-                  </media-popover>
-                  <media-fullscreen-button commandfor="fullscreen-tooltip" class="media-button media-button--subtle media-button--icon media-button--fullscreen">
-                    <media-icon name="fullscreen-enter" class="media-icon media-icon--fullscreen-enter"></media-icon>
-                    <media-icon name="fullscreen-exit" class="media-icon media-icon--fullscreen-exit"></media-icon>
+                  <media-fullscreen-button class="media-button" style="margin-left: auto;">
+                    <media-icon name="fullscreen-enter"></media-icon>
                   </media-fullscreen-button>
-                  <media-tooltip id="fullscreen-tooltip" side="top" class="media-surface media-tooltip"></media-tooltip>
                 </div>
               </media-tooltip-group>
             </media-controls>
+
             <div class="media-overlay"></div>
             <media-hotkey keys="Space" action="togglePaused"></media-hotkey>
             <media-hotkey keys="f" action="toggleFullscreen"></media-hotkey>
@@ -457,32 +555,31 @@ function renderSingleView(v) {
     window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-// Universal Listeners
-search.oninput = e => {
-    const q = e.target.value.toLowerCase();
-    render(videos.filter(v => 
-        (v.name || "").toLowerCase().includes(q) || 
-        (v.author || "").toLowerCase().includes(q)
-    ));
+// --- Live Processing Queries ---
+searchInput.oninput = (e) => {
+    const rawQuery = e.target.value.toLowerCase().trim();
+    const filteredDataset = studioDatabase.filter(v => v.name.toLowerCase().includes(rawQuery));
+    buildGalleryDeck(filteredDataset);
 };
 
-// Monitor direct browser forward/backward actions dynamically
-window.onpopstate = (event) => {
-    if (event.state && event.state.type === 'video') {
-        const targetVideo = videos.find(v => v.name === event.state.name);
-        if (targetVideo) renderSingleView(targetVideo);
+// --- Synchronize Hardware Navigation Events (Popstate) ---
+window.onpopstate = (e) => {
+    if (e.state && e.state.view === 'player') {
+        const correspondingAsset = studioDatabase.find(v => v.name === e.state.name);
+        if (correspondingAsset) displayCinemaView(correspondingAsset);
     } else {
-        showGalleryView();
+        displayGalleryDeck();
     }
 };
 
-// Application Initialisation Engine Checks
-const currentPathSegment = window.location.pathname.split('/').pop();
-const initialMatch = videos.find(v => encodeURIComponent(v.name) === currentPathSegment);
-if (initialMatch) {
-    renderSingleView(initialMatch);
+// --- Initialization Engine Bootstrap ---
+const terminalRouteSegment = window.location.pathname.split('/').filter(Boolean).pop();
+const activeDeepLinkMatch = studioDatabase.find(v => encodeURIComponent(v.name.replace(/\.[^/.]+$/, "")) === terminalRouteSegment);
+
+if (activeDeepLinkMatch) {
+    displayCinemaView(activeDeepLinkMatch);
 } else {
-    render(videos);
+    buildGalleryDeck(studioDatabase);
 }
 </script>
 </body>
